@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xingbingxuan.blog.client.mapper.CommentMapper">
+
+    <resultMap id="CommentResult" type="CommentEntity">
+        <result column="comment_id" property="commentId"/>
+        <result column="comment_name" property="commentName"/>
+        <result column="comment_content" property="commentContent"/>
+        <result column="comment_time" property="commentTime"/>
+        <!--<association property="children"
+                     select="com.xingbingxuan.blog.client.mapper.CommentMapper.selectByBidAndParentId"
+                     column="{comment_bid,comment_parent_id}" javaType="commentEntity" fetchType="lazy">
+
+        </association>-->
+    </resultMap>
+
+    <select id="selectByBid" resultMap="CommentResult">
+        SELECT * FROM comment WHERE comment_bid = #{blogId}
+    </select>
+
+    <select id="selectByBidAndParentId" resultMap="CommentResult">
+        SELECT * FROM comment WHERE comment_bid = #{commentBid} AND comment_parent_id = #{commentParentId}
+    </select>
+
+    <select id="selectCommentCount" resultType="Integer">
+        SELECT COUNT(*) FROM comment
+    </select>
+</mapper>

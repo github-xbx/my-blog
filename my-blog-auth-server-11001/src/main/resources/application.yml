@@ -1,0 +1,16 @@
+server:
+  port: 11001
+
+spring:
+  application:
+    name: my-blog-auth-server
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+  redis:
+    host: localhost
+    port: 6379
+    database: 1 #redis 使用的数据库
+
+

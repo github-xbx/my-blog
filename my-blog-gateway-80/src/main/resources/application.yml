@@ -1,0 +1,60 @@
+server:
+  port: 81
+spring:
+  application:
+    name: my-blog-gateway
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+    gateway:
+      discovery:
+        locator:
+          enabled: false
+      routes:
+        - id: test_baidu
+          uri: https://www.baidu.com
+          predicates:
+            - Query=url,baidu
+
+        - id: test_localhost
+          uri: lb://my-blog-client
+          predicates:
+            - Path=/blogClient/test
+
+
+        - id: blog_auth
+          uri: lb://my-blog-auth-server
+          predicates:
+            - Host=auth.xingbingxuan.com:81
+            #- Path=/login.html
+
+        - id: blog_client
+          uri: lb://my-blog-client
+          predicates:
+            - Path=/api/blog/**
+          filters:
+            - RewritePath=/api/blog/(?<segment>.*), /blogClient/$\{segment}
+            - UserAuth=true
+
+        - id: blog_account_admin
+          uri: lb://my-blog-account
+          predicates:
+            - Path=/api/account/admin/**
+          filters:
+            - RewritePath=/api/account/admin/(?<segment>.*), /admin/account/$\{segment}
+
+        - id: blog_admin_service
+          uri: lb://my-blog-admin
+          predicates:
+            - Path=/api/admin/**
+          filters:
+            - RewritePath=/api/admin/(?<segment>.*), /adminService/$\{segment}
+            - AdminAuth=true
+
+        - id: blog_info_admin_index
+          uri: lb://my-blog-client
+          predicates:
+            - Path=/api/info/admin/**
+          filters:
+            - RewritePath=/api/info/admin/(?<segment>.*), /blog/admin/$\{segment}

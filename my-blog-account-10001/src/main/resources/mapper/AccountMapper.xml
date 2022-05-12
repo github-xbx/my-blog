@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xingbingxuan.blog.account.mapper.AccountMapper">
+    <insert id="insertAccount" parameterType="UserEntity" >
+        insert into user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            username,
+            password,
+            nickname,
+            header,
+            <if test="mobile != null and mobile != '' ">
+                mobile,
+            </if>
+            <if test="email != null and email != '' ">
+                email,
+            </if>
+            <if test="sex != null and sex != '' ">
+                sex,
+            </if>
+            <if test="sign != null and sign != '' ">
+                sign,
+            </if>
+            <if test="integartion != null and integartion != '' ">
+                integartion,
+            </if>
+            <if test="growth != null and growth != '' ">
+                growth,
+            </if>
+            <if test="status != null and status != '' ">
+                status,
+            </if>
+            <if test="socialType != null and socialType != '' ">
+                social_type ,
+            </if>
+            <if test="socialUid != null and socialUid != '' ">
+                social_uid,
+            </if>
+            create_time,
+        </trim>
+        values
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            #{username},
+            #{password},
+            #{nickname},
+            #{header},
+            <if test="mobile != null and mobile != '' ">
+                #{mobile},
+            </if>
+            <if test="email != null and email != '' ">
+                #{email},
+            </if>
+            <if test="sex != null and sex != '' ">
+                #{sex},
+            </if>
+            <if test="sign != null and sign != '' ">
+                #{sign},
+            </if>
+            <if test="integartion != null and integartion != '' ">
+                #{integartion},
+            </if>
+            <if test="growth != null and growth != '' ">
+                #{growth},
+            </if>
+            <if test="status != null and status != '' ">
+                #{status},
+            </if>
+            <if test="socialType != null and socialType != '' ">
+                #{socialType} ,
+            </if>
+            <if test="socialUid != null and socialUid != '' ">
+                #{socialUid},
+            </if>
+            #{createTime},
+        </trim>
+    </insert>
+
+    <select id="selectOneAnd" parameterType="UserEntity" resultType="UserEntity">
+        select id,username,nickname,mobile,email,header,sex,sign,integration,growth,status,social_type,social_uid,create_time
+        from  user
+        WHERE 1=1
+        <if test="id != null and id != '' ">
+            and id = #{id}
+        </if>
+        <if test="username != null and username != ''">
+            and username = #{username}
+        </if>
+        <if test="password != null and password != ''">
+            and password = #{password}
+        </if>
+        <if test="nickname != null and nickname != ''">
+            and nickname = #{nickname}
+        </if>
+        <if test="mobile != null and mobile != '' ">
+            and mobile = #{mobile}
+        </if>
+        <if test="email != null and email != '' ">
+            and email = #{email}
+        </if>
+        <if test="header != null and header != '' ">
+            and header = #{header}
+        </if>
+        <if test="sex != null and sex != '' ">
+            and sex = #{sex}
+        </if>
+        <if test="sign != null and sign != '' ">
+            and sign = #{sign}
+        </if>
+        <if test="integartion != null and integartion != '' ">
+            and integartion = #{integartion}
+        </if>
+        <if test="growth != null and growth != '' ">
+            and growth = #{growth}
+        </if>
+        <if test="status != null and status != '' ">
+            and status = #{status}
+        </if>
+        <if test="socialType != null and socialType != '' ">
+            and social_type = #{socialType}
+        </if>
+        <if test="socialUid != null and socialUid != '' ">
+            and social_uid = #{socialUid}
+        </if>
+        <if test="createTime != null and createTime != '' ">
+            and create_time = #{createTime}
+        </if>
+    </select>
+
+    <select id="selectAccountCount" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM  user
+    </select>
+
+</mapper>
