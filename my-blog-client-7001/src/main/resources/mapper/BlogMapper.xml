@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xingbingxuan.blog.client.mapper.BlogMapper">
+
+
+    <insert id="insertBlog" parameterType="BlogEntity">
+        INSERT INTO blog(b_uid,b_title,b_description,b_content,b_img,b_state,b_insert_time,b_tid)
+        VALUES (#{bUid},#{bTitle},#{bDescription},#{bContent},#{bImg},#{bState},#{bInsertTime},#{bTid})
+    </insert>
+
+    <update id="updateBlog" parameterType="BlogEntity">
+        UPDATE blog SET
+        <trim suffix="" prefix="" suffixOverrides=",">
+            <if test="bTitle != null || bTitle != ''">
+                b_title = #{bTitle},
+            </if>
+            <if test="bDescription != null || bDescription != ''">
+                b_description = #{bDescription},
+            </if>
+            <if test="bContent != null || bContent != ''">
+                b_content = #{bContent},
+            </if>
+            <if test="bImg != null || bImg != ''">
+                b_img = #{bImg},
+            </if>
+            <if test="bState != null || bState != ''">
+                b_state = #{bState},
+            </if>
+            <if test="bTid != null || bTid != ''">
+                b_tid = #{bTid},
+            </if>
+        </trim>
+        WHERE b_id = #{bId}
+    </update>
+
+    <delete id="deleteBlogByBlogId">
+        DELETE FROM  blog WHERE  b_id = #{param1}
+    </delete>
+
+    <select id="selectBlog" resultType="BlogEntity">
+        SELECT * FROM blog
+    </select>
+
+    <select id="selectAllById" resultType="BlogEntity">
+        SELECT * FROM blog
+        WHERE b_id = #{param1}
+    </select>
+    <select id="selectBlogName" resultType="BlogEntity">
+       SELECT b_id,b_title FROM blog ORDER BY b_id DESC LIMIT 0 , 10;
+    </select>
+
+    <resultMap id="BlogVoResultMap" type="com.xingbingxuan.blog.client.entity.vo.BlogVo">
+        <result column="b_id" property="blogId"/>
+        <result column="b_title" property="blogTitle"/>
+        <result column="b_description" property="blogDescription"/>
+        <result column="b_img" property="blogImg"/>
+        <result column="b_insert_time" property="blogInsertTime"/>
+        <result column="series_id" property="seriesId"/>
+        <result column="series_name" property="seriesName"/>
+        <collection property="label" ofType="LabelEntity">
+            <result column="label_id" property="labelId"/>
+            <result column="label_name" property="labelName"/>
+        </collection>
+    </resultMap>
+
+    <select id="selectAllBlogAndSeries" resultType="BlogVo">
+        SELECT b_id,b_title,b_description,b_img,b_insert_time,series_name,series_id FROM blog,series
+        WHERE blog.b_tid = series.series_id
+    </select>
+
+    <select id="selectBlogCount" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM blog WHERE 1 = 1
+        <if test="param1 != null">
+            AND b_uid=#{param1}
+        </if>
+
+    </select>
+    <!--SELECT b_id,b_title,b_description,b_img,b_insert_time,label.label_name,label.label_id FROM blog,label,blog_label
+            WHERE blog.b_tid = blog_label.blog_id AND label.label_id = blog_label.label_id-->
+    <select id="selectAllBlogAndLabel" resultMap="BlogVoResultMap">
+        SELECT b_id,b_title,b_description,b_img,b_insert_time,label.label_name,label.label_id
+        FROM
+        blog
+        LEFT JOIN blog_label ON blog.b_id = blog_label.blog_id
+        LEFT JOIN label ON label.label_id = blog_label.label_id
+    </select>
+
+
+</mapper>

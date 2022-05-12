@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xingbingxuan.blog.client.mapper.LabelMapper">
+
+
+    <select id="selectAll" resultType="LabelEntity">
+        SELECT  * FROM label
+    </select>
+
+    <select id="selectAllByBlogId" resultType="LabelEntity">
+        SELECT * FROM label AS l,blog_label AS bl where l.label_id = bl.label_id AND bl.blog_id = #{param1}
+    </select>
+</mapper>
