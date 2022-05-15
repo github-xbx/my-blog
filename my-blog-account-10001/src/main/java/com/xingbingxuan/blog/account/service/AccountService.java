@@ -1,5 +1,6 @@
 package com.xingbingxuan.blog.account.service;
 
+import com.github.pagehelper.PageInfo;
 import com.xingbingxuan.blog.account.entity.UserEntity;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +12,17 @@ import java.util.Map;
  * @date : 2022/3/25 20:09
  */
 public interface AccountService {
+
+
+    /**
+     * 功能描述:
+     * <p>分页查询所有的用户信息</p>
+     *
+     * @return : com.github.pagehelper.PageInfo<com.xingbingxuan.blog.account.entity.UserEntity>
+     * @author : xbx
+     * @date : 2022/5/15 11:37
+     */
+    PageInfo<UserEntity> queryAllUserPage(Integer pageNum,Integer pageSize);
 
     /**
      * 功能描述:

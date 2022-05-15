@@ -32,6 +32,8 @@ public class BlogVo {
     private String blogContent;
     private String blogImg;
     private Integer blogState;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date blogInsertTime;
     private Integer blogTid;
 

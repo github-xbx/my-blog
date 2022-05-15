@@ -134,4 +134,9 @@
         SELECT create_time FROM `user` WHERE DATE_SUB(CURDATE(), INTERVAL 7 DAY) &lt;= create_time
     </select>
 
+    <select id="selectAllUser" resultType="com.xingbingxuan.blog.account.entity.UserEntity">
+        select id,username,nickname,mobile,email,header,sex,sign,integration,growth,status,social_type,social_uid,create_time
+        from  user
+    </select>
+
 </mapper>

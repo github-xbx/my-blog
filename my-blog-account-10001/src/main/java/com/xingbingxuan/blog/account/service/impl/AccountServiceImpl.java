@@ -4,6 +4,8 @@ import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.xingbingxuan.blog.account.entity.UserEntity;
 import com.xingbingxuan.blog.account.mapper.AccountMapper;
 import com.xingbingxuan.blog.account.service.AccountService;
@@ -27,6 +29,18 @@ public class AccountServiceImpl implements AccountService {
     private AccountMapper accountMapper;
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    @Override
+    public PageInfo<UserEntity> queryAllUserPage(Integer pageNum, Integer pageSize) {
+
+        PageHelper.startPage(pageNum,pageSize);
+        List<UserEntity> users = accountMapper.selectAllUser();
+
+        PageInfo<UserEntity> pageInfo = new PageInfo<>(users);
+
+
+        return pageInfo;
+    }
 
     @Override
     public UserEntity selectOneByUsernameAndSocialUid(UserEntity userEntity) {

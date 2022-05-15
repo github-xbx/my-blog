@@ -1,5 +1,6 @@
 package com.xingbingxuan.blog.account.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.util.Date;
@@ -45,5 +46,6 @@ public class UserEntity {
     private String socialUid;
 
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 }

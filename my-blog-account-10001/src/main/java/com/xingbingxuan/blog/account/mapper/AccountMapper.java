@@ -23,6 +23,16 @@ public interface AccountMapper {
      */
     UserEntity selectOneAnd(UserEntity userEntity);
 
+    /**
+     * 功能描述:
+     * <p>查询所有的用户</p>
+     *
+     * @return : java.util.List<com.xingbingxuan.blog.account.entity.UserEntity>
+     * @author : xbx
+     * @date : 2022/5/15 11:53
+     */
+    List<UserEntity> selectAllUser();
+
     Integer insertAccount(UserEntity userEntity);
 
     Integer selectAccountCount();

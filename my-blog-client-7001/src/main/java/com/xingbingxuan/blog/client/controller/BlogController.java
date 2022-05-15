@@ -35,7 +35,16 @@ public class BlogController {
         return Result.success();
     }
 
-    @GetMapping("/getBlogPage/{page}")
+    /**
+     * 功能描述:
+     * <p>分页产询所有的博客信息</p>
+     *
+     * @param page
+     * @return : com.xingbingxuan.blog.utils.Result<com.github.pagehelper.PageInfo<com.xingbingxuan.blog.client.entity.vo.BlogVo>>
+     * @author : xbx
+     * @date : 2022/5/15 10:21
+     */
+    @RequestMapping("/getBlogPage/{page}")
     public Result<PageInfo<BlogVo>> getBlogPage(@PathVariable("page") Integer page){
 
         PageInfo<BlogVo> select = blogService.blogPage(page, 8);

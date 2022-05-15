@@ -1,13 +1,14 @@
 package com.xingbingxuan.blog.account.controller;
 
+import com.github.pagehelper.PageInfo;
+import com.xingbingxuan.blog.account.entity.UserEntity;
 import com.xingbingxuan.blog.account.service.AccountService;
 import com.xingbingxuan.blog.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 用户操作控制器
@@ -20,6 +21,14 @@ public class UserController {
 
     @Autowired
     private AccountService accountService;
+
+    @PostMapping("userPage")
+    public Result<PageInfo<UserEntity>> queryAllUserPage(@RequestBody Map map){
+
+        PageInfo<UserEntity> pageInfo = accountService.queryAllUserPage((Integer) map.get("pageNum"), (Integer) map.get("pageSize"));
+
+        return Result.success(pageInfo);
+    }
 
     /**
      * 功能描述:
