@@ -118,4 +118,15 @@ public interface BlogMapper {
      */
     public List<BlogVo> selectAllBlogAndLabel();
 
+    /**
+     * 功能描述:
+     * <p>查询最近一周新增的博客</p>
+     *
+     * @return : java.util.List<com.xingbingxuan.blog.client.entity.BlogEntity>
+     * @author : xbx
+     * @date : 2022/5/14 23:06
+     */
+    public List<BlogEntity> selectCountByWeek();
+
+
 }

@@ -65,7 +65,10 @@ public class RedisUtil {
      * @return 值
      */
     public static Object get(String key) {
-        return key == null ? null : getJedis().get(key);
+        Jedis jedis = getJedis();
+        Object o = key == null ? null : jedis.get(key);
+        close(jedis);
+        return o ;
     }
 
     /**
@@ -73,10 +76,12 @@ public class RedisUtil {
      * @param key 可以传一个值 或多个
      */
     public static void del(String... key) {
+        Jedis jedis = getJedis();
         if (key != null && key.length > 0) {
-            getJedis().unlink(key);
+            jedis.unlink(key);
 
         }
+        close(jedis);
     }
 
 
@@ -86,11 +91,15 @@ public class RedisUtil {
      * @return true 存在 false不存在
      */
     public static boolean hasKey(String key) {
+        Jedis jedis = getJedis();
         try {
-            return getJedis().exists(key);
+            Boolean aBoolean = jedis.exists(key);
+            return aBoolean;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
+        }finally {
+            close(jedis);
         }
     }
 
@@ -103,17 +112,20 @@ public class RedisUtil {
      */
 
     public static boolean set(String key, Object value, long time) {
+        Jedis jedis = getJedis();
         try {
             if (time > 0) {
-                getJedis().set(key, (String) value);
-                getJedis().expire(key,time);
+                jedis.set(key, (String) value);
+                jedis.expire(key,time);
             } else {
-                getJedis().set(key, (String) value);
+                jedis.set(key, (String) value);
             }
             return true;
         } catch (Exception e) {
             e.printStackTrace();
             return false;
+        }finally {
+            close(jedis);
         }
     }
 
@@ -122,9 +134,11 @@ public class RedisUtil {
      * 递增+1
      * @param key   键
      */
-    public static long incr(String key) {
-
-        return getJedis().incr(key);
+    public static Long incr(String key) {
+        Jedis jedis = getJedis();
+        Long incr = jedis.incr(key);
+        close(jedis);
+        return incr;
     }
 
 
@@ -132,9 +146,12 @@ public class RedisUtil {
      * 递减 -1
      * @param key   键
      */
-    public static long decr(String key) {
+    public static Long decr(String key) {
+        Jedis jedis = getJedis();
+        Long decr = jedis.decr(key);
+        close(jedis);
+        return decr;
 
-        return getJedis().decr(key);
     }
 
 }

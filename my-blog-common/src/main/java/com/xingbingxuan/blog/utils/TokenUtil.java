@@ -24,7 +24,7 @@ public class TokenUtil {
      */
     public static String generateToken(String username){
         String token = null;
-        String data = username +":"+ CommonTool.getNowTimeString("yyyyMMddHHmmss");
+        String data = username +":"+ DateTool.getNowTimeString("yyyyMMddHHmmss");
         try {
             Properties properties = CommonTool.getPropertiesContent("key.properties");
             token = encryption(data,properties.getProperty("privateKey"),properties.getProperty("publicKey"));

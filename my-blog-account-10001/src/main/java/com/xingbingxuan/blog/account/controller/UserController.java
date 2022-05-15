@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 /**
  * 用户操作控制器
  * @author : xbx
@@ -19,9 +21,33 @@ public class UserController {
     @Autowired
     private AccountService accountService;
 
+    /**
+     * 功能描述:
+     * <p>获取注册用户的个数</p>
+     *
+     * @return : com.xingbingxuan.blog.utils.Result<java.lang.Integer>
+     * @author : xbx
+     * @date : 2022/5/14 17:55
+     */
     @GetMapping("accountCount")
     public Result<Integer> queryAccountCount(){
         Integer count = accountService.queryAccountCount();
         return Result.success(count);
+    }
+
+    /**
+     * 功能描述:
+     * <p>获得最近七天注册的用户数</p>
+     *
+     * @return : com.xingbingxuan.blog.utils.Result
+     * @author : xbx
+     * @date : 2022/5/14 17:57
+     */
+    @GetMapping("accountByWeek")
+    public Result accountByWeek(){
+
+        List list = accountService.queryAccountCountByThisWeek();
+
+        return Result.success(list);
     }
 }

@@ -28,4 +28,14 @@ public interface CommentMapper {
      * @date : 2022/5/4 16:39
      */
     public Integer selectCommentCount();
+
+    /**
+     * 功能描述:
+     * <p>查询最近一周的留言</p>
+     *
+     * @return : java.util.List<com.xingbingxuan.blog.client.entity.CommentEntity>
+     * @author : xbx
+     * @date : 2022/5/14 23:09
+     */
+    public List<CommentEntity> selectCountByWeek();
 }

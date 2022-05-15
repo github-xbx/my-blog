@@ -12,12 +12,16 @@ import com.xingbingxuan.blog.client.mapper.BlogMapper;
 import com.xingbingxuan.blog.client.mapper.SeriesMapper;
 import com.xingbingxuan.blog.client.service.BlogService;
 import com.xingbingxuan.blog.database.Page;
+import com.xingbingxuan.blog.utils.DateTool;
 import com.xingbingxuan.blog.utils.TokenUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author : xbx
@@ -92,5 +96,32 @@ public class BlogServiceImpl implements BlogService {
     public Boolean update(BlogEntity blogEntity) {
         Integer updateBlog = blogMapper.updateBlog(blogEntity);
         return updateBlog > 0;
+    }
+
+    @Override
+    public List queryBlogCountByWeek() {
+
+        List<BlogEntity> blogs = blogMapper.selectCountByWeek();
+
+        List<String> time = DateTool.getThisWeekTime();
+
+        List<Map<String,Object>> lists = new ArrayList<>();
+
+        for (String s : time) {
+
+            long count = blogs.stream().filter(blog -> {
+                String createTime = DateTool.DateToString("yyyy-MM-dd", blog.getBInsertTime());
+                return createTime.equals(s);
+            }).count();
+            lists.add(new HashMap<String,Object>(){{
+                put("date",s);
+                put("count",count);
+            }});
+
+        }
+
+        return lists;
+
+
     }
 }

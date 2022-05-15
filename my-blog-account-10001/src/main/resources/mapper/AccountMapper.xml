@@ -127,7 +127,11 @@
     </select>
 
     <select id="selectAccountCount" resultType="java.lang.Integer">
-        SELECT COUNT(*) FROM  user
+        SELECT COUNT(*) FROM  `user`
+    </select>
+
+    <select id="selectByThisWeek" resultType="UserEntity">
+        SELECT create_time FROM `user` WHERE DATE_SUB(CURDATE(), INTERVAL 7 DAY) &lt;= create_time
     </select>
 
 </mapper>

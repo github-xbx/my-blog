@@ -16,6 +16,7 @@ import org.springframework.http.HttpRequest;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * @author : xbx
@@ -105,11 +106,34 @@ public class BlogController {
         return Result.success(count);
     }
 
-
+    /**
+     * 功能描述:
+     * <p>查询所有博客的个数</p>
+     *
+     * @return : com.xingbingxuan.blog.utils.Result<java.lang.Integer>
+     * @author : xbx
+     * @date : 2022/5/14 22:46
+     */
     @GetMapping("adminBlogCount")
     public Result<Integer> queryBlogCount(){
 
         Integer count = blogService.queryBlogCount();
         return Result.success(count);
+    }
+
+    /**
+     * 功能描述:
+     * <p>获取最近一周的博客数量</p>
+     *
+     * @return : com.xingbingxuan.blog.utils.Result
+     * @author : xbx
+     * @date : 2022/5/14 23:18
+     */
+    @GetMapping("queryBlogCountByWeek")
+    public Result queryBlogCountByWeek(){
+
+        List list = blogService.queryBlogCountByWeek();
+
+        return Result.success(list);
     }
 }

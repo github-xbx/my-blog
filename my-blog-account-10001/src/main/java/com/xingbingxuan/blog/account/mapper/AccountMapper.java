@@ -3,6 +3,8 @@ package com.xingbingxuan.blog.account.mapper;
 import com.xingbingxuan.blog.account.entity.UserEntity;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 /**
  * @author : xbx
  * @date : 2022/3/26 21:48
@@ -24,4 +26,14 @@ public interface AccountMapper {
     Integer insertAccount(UserEntity userEntity);
 
     Integer selectAccountCount();
+
+    /**
+     * 功能描述:
+     * <p>查询最近7天注册的用户</p>
+     *
+     * @return : java.util.List<com.xingbingxuan.blog.account.entity.UserEntity>
+     * @author : xbx
+     * @date : 2022/5/14 18:25
+     */
+    List<UserEntity> selectByThisWeek();
 }

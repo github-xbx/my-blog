@@ -3,6 +3,9 @@ package com.xingbingxuan.blog.account.service;
 import com.xingbingxuan.blog.account.entity.UserEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * @author : xbx
  * @date : 2022/3/25 20:09
@@ -53,5 +56,15 @@ public interface AccountService {
      * @date : 2022/5/4 17:09
      */
     Integer queryAccountCount();
+
+    /**
+     * 功能描述:
+     * <p>获取最近7天的注册用户个数</p>
+     *
+     * @return : java.util.Map<java.lang.String,java.lang.Object>
+     * @author : xbx
+     * @date : 2022/5/14 18:47
+     */
+    List queryAccountCountByThisWeek();
 
 }

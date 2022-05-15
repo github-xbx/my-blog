@@ -26,4 +26,9 @@
     <select id="selectCommentCount" resultType="Integer">
         SELECT COUNT(*) FROM comment
     </select>
+    <select id="selectCountByWeek" resultType="CommentEntity">
+        SELECT comment_time FROM `comment` WHERE DATE_SUB(CURDATE(), INTERVAL 7 DAY) &lt;= comment_time
+    </select>
+
+
 </mapper>

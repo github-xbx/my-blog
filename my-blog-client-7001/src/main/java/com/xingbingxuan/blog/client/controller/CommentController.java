@@ -38,4 +38,19 @@ public class CommentController {
 
         return Result.success(count);
     }
+
+    /**
+     * 功能描述:
+     * <p>获取最近一周评论的个数</p>
+     *
+     * @return : com.xingbingxuan.blog.utils.Result
+     * @author : xbx
+     * @date : 2022/5/14 23:19
+     */
+    @GetMapping("queryCommentCountByWeek")
+    public Result queryCommentCountByWeek(){
+        List list = commentService.queryCommentCountByWeek();
+
+        return Result.success(list);
+    }
 }

@@ -86,5 +86,9 @@
         LEFT JOIN label ON label.label_id = blog_label.label_id
     </select>
 
+    <select id="selectCountByWeek" resultType="BlogEntity">
+        SELECT b_insert_time FROM `blog` WHERE DATE_SUB(CURDATE(), INTERVAL 7 DAY) &lt;= b_insert_time
+    </select>
+
 
 </mapper>

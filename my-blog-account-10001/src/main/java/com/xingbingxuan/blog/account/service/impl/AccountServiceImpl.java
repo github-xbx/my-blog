@@ -7,12 +7,14 @@ import cn.hutool.json.JSONUtil;
 import com.xingbingxuan.blog.account.entity.UserEntity;
 import com.xingbingxuan.blog.account.mapper.AccountMapper;
 import com.xingbingxuan.blog.account.service.AccountService;
+import com.xingbingxuan.blog.utils.DateTool;
 import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Calendar;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author : xbx
@@ -77,5 +79,30 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public Integer queryAccountCount() {
         return accountMapper.selectAccountCount();
+    }
+
+    @Override
+    public List queryAccountCountByThisWeek() {
+
+        List<UserEntity> users = accountMapper.selectByThisWeek();
+
+        List<String> time = DateTool.getThisWeekTime();
+
+        List<Map<String,Object>> lists = new ArrayList<>();
+
+        for (String s : time) {
+            long count = users.stream().filter(user -> {
+                String createTime = DateTool.DateToString("yyyy-MM-dd", user.getCreateTime());
+                return createTime.equals(s);
+            }).count();
+
+            lists.add(new HashMap<String,Object>(){{
+                put("date",s);
+                put("count",count);
+            }});
+        }
+
+
+        return lists;
     }
 }
