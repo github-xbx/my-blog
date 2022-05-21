@@ -15,6 +15,20 @@
         </association>-->
     </resultMap>
 
+    <update id="updateCommentBy">
+        UPDATE `comment` SET
+        <trim suffix="" prefix="" suffixOverrides=",">
+            <if test=" commentFlag != null">
+                comment_flag = #{commentFlag},
+            </if>
+            <if test="commentContent != null and commentContent != ''">
+                comment_content = #{commentContent}
+            </if>
+        </trim>
+        WHERE
+            comment_id = #{commentId}
+    </update>
+
     <select id="selectByBid" resultMap="CommentResult">
         SELECT * FROM comment WHERE comment_bid = #{blogId}
     </select>

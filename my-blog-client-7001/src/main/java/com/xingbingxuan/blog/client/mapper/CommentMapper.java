@@ -51,5 +51,15 @@ public interface CommentMapper {
     public List<CommentVo> selectAllComment(@Param("search") String search);
 
 
-
+    /**
+     * 功能描述:
+     * <p>根据具体的字段更改comment评论留言信息</p>
+     * <p>不为空的字段都会更改</p>
+     * <p>目前只能改内容和状态</p>
+     * @param commentEntity
+     * @return : java.lang.Integer
+     * @author : xbx
+     * @date : 2022/5/21 11:52
+     */
+    public Integer updateCommentBy(CommentEntity commentEntity);
 }

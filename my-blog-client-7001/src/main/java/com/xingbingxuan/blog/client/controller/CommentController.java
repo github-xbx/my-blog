@@ -72,4 +72,25 @@ public class CommentController {
 
         return Result.success(pageInfo);
     }
+
+
+    /**
+     * 功能描述:
+     * <p>更爱评论</p>
+     *
+     * @param commentEntity
+     * @return : com.xingbingxuan.blog.utils.Result
+     * @author : xbx
+     * @date : 2022/5/21 16:22
+     */
+    @PostMapping("updateCommentById")
+    public Result updateCommentById(@RequestBody CommentEntity commentEntity) throws Exception{
+
+        Integer flag = commentService.updateCommentByEntity(commentEntity);
+
+
+        return Result.success("更改成功。。。");
+
+
+    }
 }

@@ -37,4 +37,14 @@ public interface CommentService {
      * @date : 2022/5/16 22:23
      */
     public PageInfo<CommentVo> queryAllCommentPage(String search,Integer pageNum,Integer pageSize);
+
+    /**
+     * 功能描述:
+     * <p>根据评论的实体信息更改</p>
+     *
+     * @return : java.lang.Integer
+     * @author : xbx
+     * @date : 2022/5/21 15:56
+     */
+    public Integer updateCommentByEntity(CommentEntity commentEntity) throws Exception;
 }

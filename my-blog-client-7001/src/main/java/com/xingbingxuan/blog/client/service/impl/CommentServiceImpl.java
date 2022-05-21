@@ -83,6 +83,24 @@ public class CommentServiceImpl implements CommentService {
         return pageInfo;
     }
 
+    @Override
+    public Integer updateCommentByEntity(CommentEntity commentEntity) throws Exception {
+
+        System.out.println(commentEntity.getCommentFlag());
+        System.out.println(commentEntity.getCommentContent());
+
+        if (commentEntity.getCommentId() == null){
+            throw new Exception("更改的评论id不能为空！！！");
+        }
+        if (commentEntity.getCommentContent() == null && commentEntity.getCommentFlag() == null){
+            throw new Exception("更改的内容不能为空！！！");
+        }
+
+        Integer flag = commentMapper.updateCommentBy(commentEntity);
+
+        return flag;
+    }
+
     /**
      * 功能描述:
      * <p> 循环、递归 的方式获取所有的评论和评论的回复</p>
