@@ -87,7 +87,7 @@
                 <artifactId>druid-spring-boot-starter</artifactId>
                 <version>${druid.spring.boot.version}</version>
             </dependency>
-            <!-- spring boot 整合mybatis 依赖-->
+            <!-- spring boot 整合mybatis 依赖 wwwwwwwwww-->
             <dependency>
                 <groupId>org.mybatis.spring.boot</groupId>
                 <artifactId>mybatis-spring-boot-starter</artifactId>
@@ -105,6 +105,7 @@
         </dependencies>
     </dependencyManagement>
 
+         
 
     <build>
 
