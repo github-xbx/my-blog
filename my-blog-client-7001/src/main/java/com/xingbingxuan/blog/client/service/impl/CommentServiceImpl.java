@@ -3,6 +3,7 @@ package com.xingbingxuan.blog.client.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.xingbingxuan.blog.client.entity.CommentEntity;
+import com.xingbingxuan.blog.client.entity.vo.CommentVo;
 import com.xingbingxuan.blog.client.mapper.CommentMapper;
 import com.xingbingxuan.blog.client.service.CommentService;
 import com.xingbingxuan.blog.utils.DateTool;
@@ -63,6 +64,23 @@ public class CommentServiceImpl implements CommentService {
         }
 
         return lists;
+    }
+
+    @Override
+    public PageInfo<CommentVo> queryAllCommentPage(String search,Integer pageNum, Integer pageSize) {
+        if (pageNum == null){
+            pageNum =1;
+        }
+        if (pageSize == null){
+            pageSize = PAGE_SIZE;
+        }
+        PageHelper.startPage(pageNum,pageSize);
+
+        List<CommentVo> commentVos = commentMapper.selectAllComment(search);
+
+        PageInfo<CommentVo> pageInfo = new PageInfo<>(commentVos);
+
+        return pageInfo;
     }
 
     /**

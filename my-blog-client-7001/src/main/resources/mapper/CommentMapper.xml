@@ -30,5 +30,17 @@
         SELECT comment_time FROM `comment` WHERE DATE_SUB(CURDATE(), INTERVAL 7 DAY) &lt;= comment_time
     </select>
 
+    <select id="selectAllComment" resultType="CommentVo">
+        SELECT c.* ,b.b_title FROM `comment` AS c LEFT JOIN `blog` AS b ON b.b_id = c.comment_bid
+        <where>
+            1 = 1
+            <if test="search != null and search != ''">
+                AND b.b_title LIKE CONCAT('%',#{search},'%')
+                OR c.comment_name LIKE CONCAT('%',#{search},'%')
+            </if>
+        </where>
+
+    </select>
+
 
 </mapper>

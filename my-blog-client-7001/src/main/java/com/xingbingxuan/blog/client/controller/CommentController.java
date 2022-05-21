@@ -2,15 +2,14 @@ package com.xingbingxuan.blog.client.controller;
 
 import com.github.pagehelper.PageInfo;
 import com.xingbingxuan.blog.client.entity.CommentEntity;
+import com.xingbingxuan.blog.client.entity.vo.CommentVo;
 import com.xingbingxuan.blog.client.service.CommentService;
 import com.xingbingxuan.blog.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author : xbx
@@ -52,5 +51,25 @@ public class CommentController {
         List list = commentService.queryCommentCountByWeek();
 
         return Result.success(list);
+    }
+
+
+    /**
+     * 功能描述:
+     * <p>分页查询所有的评论信息</p>
+     *
+     * @param map
+     * @return : com.xingbingxuan.blog.utils.Result
+     * @author : xbx
+     * @date : 2022/5/16 22:18
+     */
+    @PostMapping("queryAllCommentPage")
+    public Result queryAllCommentPage(@RequestBody Map map){
+
+
+        PageInfo<CommentVo> pageInfo = commentService.queryAllCommentPage(
+                        (String) map.get("search"), (Integer) map.get("pageNo"), (Integer) map.get("pageSize"));
+
+        return Result.success(pageInfo);
     }
 }

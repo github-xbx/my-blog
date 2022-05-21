@@ -1,23 +1,18 @@
-package com.xingbingxuan.blog.client.entity;
+package com.xingbingxuan.blog.client.entity.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
-import lombok.ToString;
-import org.springframework.data.annotation.Id;
 
 import java.util.Date;
-import java.util.List;
 
 /**
- * 评论实体类
  * @author : xbx
- * @date : 2022/4/7 16:38
+ * @date : 2022/5/16 22:20
  */
 @Data
-@ToString
-public class CommentEntity {
 
-    @Id
+public class CommentVo {
+
     private Integer commentId;
 
     private Integer commentUid;
@@ -35,5 +30,5 @@ public class CommentEntity {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date commentTime;
 
-    private List<CommentEntity> children;
+    private String bTitle;
 }

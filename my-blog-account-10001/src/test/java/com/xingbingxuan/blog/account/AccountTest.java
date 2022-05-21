@@ -31,7 +31,7 @@ public class AccountTest {
     public void test003(){
 
 
-        List<UserEntity> userEntities = accountMapper.selectByThisWeek();
+        List<UserEntity> userEntities = accountMapper.selectAllUser();
         userEntities.forEach(System.out::println);
     }
 

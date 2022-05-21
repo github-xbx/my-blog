@@ -1,6 +1,7 @@
 package com.xingbingxuan.blog.client.mapper;
 
 import com.xingbingxuan.blog.client.entity.CommentEntity;
+import com.xingbingxuan.blog.client.entity.vo.CommentVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -38,4 +39,17 @@ public interface CommentMapper {
      * @date : 2022/5/14 23:09
      */
     public List<CommentEntity> selectCountByWeek();
+
+    /**
+     * 功能描述:
+     * <p>查询所有的评论信息</p>
+     *
+     * @return : java.util.List<com.xingbingxuan.blog.client.entity.vo.CommentVo>
+     * @author : xbx
+     * @date : 2022/5/16 22:28
+     */
+    public List<CommentVo> selectAllComment(@Param("search") String search);
+
+
+
 }
