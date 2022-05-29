@@ -28,7 +28,7 @@ public interface CommentService {
 
     /**
      * 功能描述:
-     * <p>分页查询</p>
+     * <p>管理员 所有父级标签分页查询</p>
      *
      * @param pageNum  页码
      * @param pageSize 页面大小
@@ -37,6 +37,16 @@ public interface CommentService {
      * @date : 2022/5/16 22:23
      */
     public PageInfo<CommentVo> queryAllCommentPage(String search,Integer pageNum,Integer pageSize);
+
+    /**
+     * 功能描述:
+     * <p>查询子集评论</p>
+     * @param parentId 附近评论id
+     * @return : java.util.List<com.xingbingxuan.blog.client.entity.vo.CommentVo>
+     * @author : xbx
+     * @date : 2022/5/29 10:16
+     */
+    public List<CommentVo> queryAllCommentChild(Integer parentId);
 
     /**
      * 功能描述:

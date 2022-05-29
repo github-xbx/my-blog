@@ -73,7 +73,20 @@ public class CommentController {
         return Result.success(pageInfo);
     }
 
-
+    /**
+     * 功能描述:
+     * <p>查询所有的子评论</p>
+     *
+     * @param map
+     * @return : com.xingbingxuan.blog.utils.Result<java.util.List<com.xingbingxuan.blog.client.entity.vo.CommentVo>>
+     * @author : xbx
+     * @date : 2022/5/29 10:22
+     */
+    @PostMapping("queryCommentChild")
+    public Result<List<CommentVo>> queryCommentChild(@RequestBody Map map){
+        List<CommentVo> parentId = commentService.queryAllCommentChild((Integer) map.get("parentId"));
+        return Result.success(parentId);
+    }
     /**
      * 功能描述:
      * <p>更爱评论</p>

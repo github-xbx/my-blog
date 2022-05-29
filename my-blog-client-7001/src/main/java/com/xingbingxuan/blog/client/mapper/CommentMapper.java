@@ -32,6 +32,17 @@ public interface CommentMapper {
 
     /**
      * 功能描述:
+     * <p>根据父id查找所有的一级子信息</p>
+     *
+     * @param parentId
+     * @return : java.util.List<com.xingbingxuan.blog.client.entity.vo.CommentVo>
+     * @author : xbx
+     * @date : 2022/5/22 22:47
+     */
+    public List<CommentVo> selectAllByCommentParentId(Integer parentId);
+
+    /**
+     * 功能描述:
      * <p>查询最近一周的留言</p>
      *
      * @return : java.util.List<com.xingbingxuan.blog.client.entity.CommentEntity>

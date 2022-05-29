@@ -55,6 +55,10 @@
         </where>
 
     </select>
+    <select id="selectAllByCommentParentId" resultType="CommentVo">
+        SELECT c.* ,b.b_title FROM `comment` AS c LEFT JOIN `blog` AS b ON b.b_id = c.comment_bid WHERE c.comment_parent_id = #{param1}
+
+    </select>
 
 
 </mapper>

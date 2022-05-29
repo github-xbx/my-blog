@@ -76,11 +76,19 @@ public class CommentServiceImpl implements CommentService {
         }
         PageHelper.startPage(pageNum,pageSize);
 
-        List<CommentVo> commentVos = commentMapper.selectAllComment(search);
+        List<CommentVo> commentVos = commentMapper.selectAllByCommentParentId(-1);
 
         PageInfo<CommentVo> pageInfo = new PageInfo<>(commentVos);
 
         return pageInfo;
+    }
+
+    @Override
+    public List<CommentVo> queryAllCommentChild(Integer parentId) {
+
+        List<CommentVo> commentVos = commentMapper.selectAllByCommentParentId(parentId);
+
+        return commentVos;
     }
 
     @Override
