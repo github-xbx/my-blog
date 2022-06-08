@@ -1,7 +1,7 @@
 package com.xingbingxuan.blog.client.controller;
 
-import com.xingbingxuan.blog.client.entity.SeriesEntity;
-import com.xingbingxuan.blog.client.service.SeriesService;
+import com.xingbingxuan.blog.client.entity.CategoryEntity;
+import com.xingbingxuan.blog.client.service.CategoryService;
 import com.xingbingxuan.blog.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,15 +17,15 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("blogClient")
-public class SeriesController {
+public class CategoryController {
 
     @Autowired
-    private SeriesService seriesService;
+    private CategoryService categoryService;
 
-    @GetMapping("allSeries")
-    public Result<List<SeriesEntity>> allSeries(){
+    @GetMapping("queryCategoryAll")
+    public Result<List<CategoryEntity>> queryCategoryAll(){
 
-        List<SeriesEntity> all = seriesService.all();
+        List<CategoryEntity> all = categoryService.all();
         return Result.success(all);
     }
 }

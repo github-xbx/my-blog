@@ -2,6 +2,7 @@ package com.xingbingxuan.blog.account.service;
 
 import com.github.pagehelper.PageInfo;
 import com.xingbingxuan.blog.account.entity.UserEntity;
+import com.xingbingxuan.blog.account.entity.vo.UserVo;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -78,5 +79,15 @@ public interface AccountService {
      * @date : 2022/5/14 18:47
      */
     List queryAccountCountByThisWeek();
+
+    /**
+     * 功能描述:
+     * <p>根据用户id集合产询具体信息</p>
+     * @param userIds
+     * @return : java.util.List<com.xingbingxuan.blog.account.entity.vo.UserVo>
+     * @author : xbx
+     * @date : 2022/6/8 22:49
+     */
+    List<UserVo> queryUserHeaderByIds(List userIds);
 
 }

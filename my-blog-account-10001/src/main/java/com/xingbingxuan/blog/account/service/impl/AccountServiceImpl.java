@@ -7,10 +7,12 @@ import cn.hutool.json.JSONUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.xingbingxuan.blog.account.entity.UserEntity;
+import com.xingbingxuan.blog.account.entity.vo.UserVo;
 import com.xingbingxuan.blog.account.mapper.AccountMapper;
 import com.xingbingxuan.blog.account.service.AccountService;
 import com.xingbingxuan.blog.utils.DateTool;
 import org.checkerframework.checker.units.qual.A;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -118,5 +120,22 @@ public class AccountServiceImpl implements AccountService {
 
 
         return lists;
+    }
+
+    @Override
+    public List<UserVo> queryUserHeaderByIds(List userIds) {
+
+        ArrayList<UserVo> userVos = new ArrayList<>();
+
+        List<UserEntity> userEntities = accountMapper.selectAllUserByIds(userIds);
+
+        for (UserEntity userEntity : userEntities) {
+            UserVo userVo = new UserVo();
+            BeanUtils.copyProperties(userEntity,userVo);
+            userVos.add(userVo);
+        }
+
+
+        return userVos;
     }
 }

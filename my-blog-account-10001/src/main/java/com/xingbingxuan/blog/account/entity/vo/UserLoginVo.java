@@ -1,4 +1,4 @@
-package com.xingbingxuan.blog.account.vo;
+package com.xingbingxuan.blog.account.entity.vo;
 
 import lombok.Data;
 import lombok.ToString;

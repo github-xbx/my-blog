@@ -1,10 +1,8 @@
 package com.xingbingxuan.blog.client.mapper;
 
-import com.github.pagehelper.PageInfo;
+
 import com.xingbingxuan.blog.client.entity.BlogEntity;
-import com.xingbingxuan.blog.client.entity.and.BlogAndSeries;
 import com.xingbingxuan.blog.client.entity.vo.BlogVo;
-import com.xingbingxuan.blog.database.Page;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;

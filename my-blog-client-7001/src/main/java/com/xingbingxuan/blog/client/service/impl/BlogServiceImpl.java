@@ -5,13 +5,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.xingbingxuan.blog.client.entity.BlogEntity;
-import com.xingbingxuan.blog.client.entity.SeriesEntity;
-import com.xingbingxuan.blog.client.entity.and.BlogAndSeries;
+import com.xingbingxuan.blog.client.entity.CategoryEntity;
 import com.xingbingxuan.blog.client.entity.vo.BlogVo;
 import com.xingbingxuan.blog.client.mapper.BlogMapper;
-import com.xingbingxuan.blog.client.mapper.SeriesMapper;
+import com.xingbingxuan.blog.client.mapper.CategoryMapper;
 import com.xingbingxuan.blog.client.service.BlogService;
-import com.xingbingxuan.blog.database.Page;
 import com.xingbingxuan.blog.utils.DateTool;
 import com.xingbingxuan.blog.utils.TokenUtil;
 import org.springframework.beans.BeanUtils;
@@ -33,7 +31,7 @@ public class BlogServiceImpl implements BlogService {
     @Autowired
     private BlogMapper blogMapper;
     @Autowired
-    private SeriesMapper seriesMapper;
+    private CategoryMapper categoryMapper;
 
     @Override
     public PageInfo<BlogEntity> select(int pageNum,int pageSize) {
@@ -50,8 +48,8 @@ public class BlogServiceImpl implements BlogService {
 
         List<BlogVo> blogVos = blogMapper.selectAllBlogAndLabel();
         blogVos.forEach(blogVo -> {
-            SeriesEntity seriesEntity = seriesMapper.selectAllByBId(blogVo.getBlogId());
-            BeanUtils.copyProperties(seriesEntity,blogVo);
+            CategoryEntity categoryEntity = categoryMapper.selectAllByBId(blogVo.getBlogId());
+            BeanUtils.copyProperties(categoryEntity,blogVo);
         });
 
         PageInfo<BlogVo> blogAndSeriesPageInfo = new PageInfo<>(blogVos);

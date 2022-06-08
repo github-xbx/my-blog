@@ -2,7 +2,7 @@ package com.xingbingxuan.blog.client.service;
 
 import com.github.pagehelper.PageInfo;
 import com.xingbingxuan.blog.client.entity.BlogEntity;
-import com.xingbingxuan.blog.client.entity.and.BlogAndSeries;
+
 import com.xingbingxuan.blog.client.entity.vo.BlogVo;
 
 import java.util.List;

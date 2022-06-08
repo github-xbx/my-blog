@@ -138,5 +138,13 @@
         select id,username,nickname,mobile,email,header,sex,sign,integration,growth,status,social_type,social_uid,create_time
         from  user
     </select>
+    <!-- 注：list 为参数的书写方式-->
+    <select id="selectAllUserByIds" resultType="com.xingbingxuan.blog.account.entity.UserEntity">
+        SELECT id,username,header,create_time FROM `user` WHERE id IN
+        <foreach index="index" collection="list" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+
+    </select>
 
 </mapper>

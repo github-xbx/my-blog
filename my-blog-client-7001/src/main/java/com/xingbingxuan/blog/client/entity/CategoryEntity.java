@@ -8,10 +8,10 @@ import lombok.Data;
  * @date : 2022/4/5 19:22
  */
 @Data
-public class SeriesEntity {
+public class CategoryEntity {
 
-    private Integer seriesId;
+    private Integer categoryId;
 
-    private String seriesName;
+    private String categoryName;
 
 }

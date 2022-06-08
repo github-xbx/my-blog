@@ -1,7 +1,7 @@
 package com.xingbingxuan.blog.client.entity.and;
 
 import com.xingbingxuan.blog.client.entity.BlogEntity;
-import com.xingbingxuan.blog.client.entity.SeriesEntity;
+import com.xingbingxuan.blog.client.entity.CategoryEntity;
 import lombok.Data;
 import lombok.ToString;
 
@@ -11,9 +11,9 @@ import lombok.ToString;
  */
 @Data
 @ToString
-public class BlogAndSeries {
+public class BlogAndCategory {
 
     private BlogEntity blogEntity;
 
-    private SeriesEntity seriesEntity;
+    private CategoryEntity categoryEntity;
 }

@@ -1,6 +1,6 @@
 package com.xingbingxuan.blog.client.mapper;
 
-import com.xingbingxuan.blog.client.entity.SeriesEntity;
+import com.xingbingxuan.blog.client.entity.CategoryEntity;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -10,7 +10,7 @@ import java.util.List;
  * @date : 2022/4/5 19:24
  */
 @Mapper
-public interface SeriesMapper {
+public interface CategoryMapper {
 
     /**
      * 功能描述:
@@ -21,7 +21,7 @@ public interface SeriesMapper {
      * @author : xbx
      * @date : 2022/4/6 22:47
      */
-    public List<SeriesEntity> selectAll();
+    public List<CategoryEntity> selectAll();
 
     /**
      * 功能描述:
@@ -32,6 +32,6 @@ public interface SeriesMapper {
      * @author : xbx
      * @date : 2022/5/3 13:31
      */
-    public SeriesEntity selectAllByBId(Integer blogId);
+    public CategoryEntity selectAllByBId(Integer blogId);
 
 }

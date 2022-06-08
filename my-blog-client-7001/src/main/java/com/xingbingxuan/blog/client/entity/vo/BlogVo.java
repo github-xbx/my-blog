@@ -38,8 +38,8 @@ public class BlogVo {
     private Integer blogTid;
 
     /*类别*/
-    private Integer seriesId;
-    private String seriesName;
+    private Integer categoryId;
+    private String categoryName;
 
     /*标签*/
     private List<LabelEntity> label;

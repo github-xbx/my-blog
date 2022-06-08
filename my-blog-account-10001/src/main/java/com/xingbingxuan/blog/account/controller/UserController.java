@@ -2,6 +2,7 @@ package com.xingbingxuan.blog.account.controller;
 
 import com.github.pagehelper.PageInfo;
 import com.xingbingxuan.blog.account.entity.UserEntity;
+import com.xingbingxuan.blog.account.entity.vo.UserVo;
 import com.xingbingxuan.blog.account.service.AccountService;
 import com.xingbingxuan.blog.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,5 +59,21 @@ public class UserController {
         List list = accountService.queryAccountCountByThisWeek();
 
         return Result.success(list);
+    }
+
+    /**
+     * 功能描述:
+     * <p>根据用户的id集合查询各自的头像信息</p>
+     * @param userIds 用户id集合
+     * @return : java.util.List<com.xingbingxuan.blog.account.entity.vo.UserVo>
+     * @author : xbx
+     * @date : 2022/6/8 22:47
+     */
+    @PostMapping("queryUserHeaderByIds")
+    public List<UserVo> queryUserHeaderByIds(List userIds){
+
+        List<UserVo> userVos = accountService.queryUserHeaderByIds(userIds);
+
+        return userVos;
     }
 }

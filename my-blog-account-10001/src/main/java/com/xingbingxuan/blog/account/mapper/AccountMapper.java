@@ -1,6 +1,7 @@
 package com.xingbingxuan.blog.account.mapper;
 
 import com.xingbingxuan.blog.account.entity.UserEntity;
+import com.xingbingxuan.blog.account.entity.vo.UserVo;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -46,4 +47,14 @@ public interface AccountMapper {
      * @date : 2022/5/14 18:25
      */
     List<UserEntity> selectByThisWeek();
+
+    /**
+     * 功能描述:
+     * <p>根据用户ids查询所有信息</p>
+     * @param ids
+     * @return : java.util.List<com.xingbingxuan.blog.account.entity.vo.UserVo>
+     * @author : xbx
+     * @date : 2022/6/8 22:50
+     */
+    List<UserEntity> selectAllUserByIds(List ids);
 }
