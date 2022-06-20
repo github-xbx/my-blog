@@ -1,6 +1,7 @@
 package com.xingbingxuan.blog.client.mapper;
 
 import com.xingbingxuan.blog.client.entity.LabelEntity;
+import com.xingbingxuan.blog.vo.LabelVo;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -14,5 +15,5 @@ public interface LabelMapper {
 
     public List<LabelEntity> selectAll();
 
-    public List<LabelEntity> selectAllByBlogId(Integer blogId);
+    public List<LabelVo> selectAllByBlogId(Integer blogId);
 }

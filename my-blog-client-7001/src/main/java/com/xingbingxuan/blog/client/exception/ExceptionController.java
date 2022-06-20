@@ -60,5 +60,11 @@ public class ExceptionController {
         return Result.error(500,"sql错误！！！");
     }
 
-
+    @ResponseBody
+    @ExceptionHandler(NullPointerException.class)
+    public Result NullPointerException(NullPointerException e){
+        log.error(e.getMessage());
+        e.printStackTrace();
+        return Result.error(500,"空指针异常！！！");
+    }
 }

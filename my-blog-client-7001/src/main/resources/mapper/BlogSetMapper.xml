@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xingbingxuan.blog.client.mapper.BlogSetMapper">
+
+
+    <select id="selectAll" resultType="com.xingbingxuan.blog.client.entity.BlogSetEntity">
+        SELECT  * FROM blog_set
+    </select>
+    <select id="selectAllBlogId" resultType="java.lang.Integer">
+        SELECT blog_id FROM blog_set
+    </select>
+</mapper>

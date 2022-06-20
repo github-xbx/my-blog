@@ -1,7 +1,6 @@
 package com.xingbingxuan.blog.account.mapper;
 
 import com.xingbingxuan.blog.account.entity.UserEntity;
-import com.xingbingxuan.blog.account.entity.vo.UserVo;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;

@@ -2,9 +2,9 @@ package com.xingbingxuan.blog.account.controller;
 
 import com.github.pagehelper.PageInfo;
 import com.xingbingxuan.blog.account.entity.UserEntity;
-import com.xingbingxuan.blog.account.entity.vo.UserVo;
 import com.xingbingxuan.blog.account.service.AccountService;
 import com.xingbingxuan.blog.utils.Result;
+import com.xingbingxuan.blog.vo.UserVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -64,16 +64,16 @@ public class UserController {
     /**
      * 功能描述:
      * <p>根据用户的id集合查询各自的头像信息</p>
-     * @param userIds 用户id集合
+     * @param blogIdAndUserId
      * @return : java.util.List<com.xingbingxuan.blog.account.entity.vo.UserVo>
      * @author : xbx
      * @date : 2022/6/8 22:47
      */
     @PostMapping("queryUserHeaderByIds")
-    public List<UserVo> queryUserHeaderByIds(List userIds){
+    public Map queryUserHeaderByIds(@RequestBody Map<Integer,Integer> blogIdAndUserId){
 
-        List<UserVo> userVos = accountService.queryUserHeaderByIds(userIds);
+        Map map = accountService.queryUserHeaderByIds(blogIdAndUserId);
 
-        return userVos;
+        return map;
     }
 }

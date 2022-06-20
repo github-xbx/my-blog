@@ -1,16 +1,9 @@
-package com.xingbingxuan.blog.client.entity.vo;
+package com.xingbingxuan.blog.vo;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.xingbingxuan.blog.client.entity.LabelEntity;
-import lombok.AllArgsConstructor;
+
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.springframework.data.annotation.Id;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
 
@@ -21,7 +14,6 @@ import java.util.List;
  */
 @Data
 @ToString
-
 public class BlogVo {
 
     /*博客*/
@@ -33,7 +25,7 @@ public class BlogVo {
     private String blogImg;
     private Integer blogState;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+
     private Date blogInsertTime;
     private Integer blogTid;
 
@@ -42,7 +34,7 @@ public class BlogVo {
     private String categoryName;
 
     /*标签*/
-    private List<LabelEntity> label;
+    private List<LabelVo> label;
 
     /*用户头像*/
     private String userHeader;

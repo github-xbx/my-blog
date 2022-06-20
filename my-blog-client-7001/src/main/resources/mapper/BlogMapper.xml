@@ -56,15 +56,15 @@
         <result column="b_description" property="blogDescription"/>
         <result column="b_img" property="blogImg"/>
         <result column="b_insert_time" property="blogInsertTime"/>
-        <result column="series_id" property="seriesId"/>
-        <result column="series_name" property="seriesName"/>
+        <result column="series_id" property="categoryId"/>
+        <result column="series_name" property="categoryName"/>
         <collection property="label" ofType="LabelEntity">
             <result column="label_id" property="labelId"/>
             <result column="label_name" property="labelName"/>
         </collection>
     </resultMap>
 
-    <select id="selectAllBlogAndSeries" resultType="BlogVo">
+    <select id="selectAllBlogAndSeries" resultType="com.xingbingxuan.blog.vo.BlogVo">
         SELECT b_id,b_title,b_description,b_img,b_insert_time,series_name,series_id FROM blog,series
         WHERE blog.b_tid = series.series_id
     </select>
@@ -88,6 +88,23 @@
 
     <select id="selectCountByWeek" resultType="BlogEntity">
         SELECT b_insert_time FROM `blog` WHERE DATE_SUB(CURDATE(), INTERVAL 7 DAY) &lt;= b_insert_time
+    </select>
+    <select id="selectAllByBlogIds" resultType="com.xingbingxuan.blog.vo.BlogVo">
+        SELECT
+        b.b_id AS blogId,
+        b.b_uid AS blogUid,
+        b.b_title AS blogTitle,
+        b.b_content AS blogContent,
+        b.b_description AS blogDescription,
+        b.b_img AS blogImg,
+        b.b_state AS blogState,
+        b.b_insert_time AS blogInsertTime,
+        c.category_id AS categoryId,
+        c.category_name AS categoryName
+         FROM `blog` b, `category` c WHERE c.category_id = b.b_Tid AND b.b_id IN
+        <foreach collection="list" item="blogId" index="index" open="(" close=")" separator=",">
+            #{blogId}
+        </foreach>
     </select>
 
 

@@ -2,7 +2,7 @@ package com.xingbingxuan.blog.client.mapper;
 
 
 import com.xingbingxuan.blog.client.entity.BlogEntity;
-import com.xingbingxuan.blog.client.entity.vo.BlogVo;
+import com.xingbingxuan.blog.vo.BlogVo;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -126,5 +126,7 @@ public interface BlogMapper {
      */
     public List<BlogEntity> selectCountByWeek();
 
+
+    public List<BlogVo> selectAllByBlogIds(List<Integer> blogIds);
 
 }

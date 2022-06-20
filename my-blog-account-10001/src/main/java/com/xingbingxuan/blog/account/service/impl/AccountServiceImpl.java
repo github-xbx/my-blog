@@ -7,18 +7,16 @@ import cn.hutool.json.JSONUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.xingbingxuan.blog.account.entity.UserEntity;
-import com.xingbingxuan.blog.account.entity.vo.UserVo;
 import com.xingbingxuan.blog.account.mapper.AccountMapper;
 import com.xingbingxuan.blog.account.service.AccountService;
 import com.xingbingxuan.blog.utils.DateTool;
-import org.checkerframework.checker.units.qual.A;
+import com.xingbingxuan.blog.vo.UserVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * @author : xbx
@@ -35,7 +33,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public PageInfo<UserEntity> queryAllUserPage(Integer pageNum, Integer pageSize) {
 
-        PageHelper.startPage(pageNum,pageSize);
+        PageHelper.startPage(pageNum, pageSize);
         List<UserEntity> users = accountMapper.selectAllUser();
 
         PageInfo<UserEntity> pageInfo = new PageInfo<>(users);
@@ -85,7 +83,7 @@ public class AccountServiceImpl implements AccountService {
                     userEntity.setPassword(null);
                     user = userEntity;
                 }
-            }else {
+            } else {
                 //存在
             }
         }
@@ -104,7 +102,7 @@ public class AccountServiceImpl implements AccountService {
 
         List<String> time = DateTool.getThisWeekTime();
 
-        List<Map<String,Object>> lists = new ArrayList<>();
+        List<Map<String, Object>> lists = new ArrayList<>();
 
         for (String s : time) {
             long count = users.stream().filter(user -> {
@@ -112,9 +110,9 @@ public class AccountServiceImpl implements AccountService {
                 return createTime.equals(s);
             }).count();
 
-            lists.add(new HashMap<String,Object>(){{
-                put("date",s);
-                put("count",count);
+            lists.add(new HashMap<String, Object>() {{
+                put("date", s);
+                put("count", count);
             }});
         }
 
@@ -123,19 +121,21 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public List<UserVo> queryUserHeaderByIds(List userIds) {
+    public Map<String, Object> queryUserHeaderByIds(Map<Integer, Integer> blogIdAndUserId) {
 
-        ArrayList<UserVo> userVos = new ArrayList<>();
+        HashMap<String, Object> resultMap = new HashMap<>();
 
-        List<UserEntity> userEntities = accountMapper.selectAllUserByIds(userIds);
-
-        for (UserEntity userEntity : userEntities) {
-            UserVo userVo = new UserVo();
-            BeanUtils.copyProperties(userEntity,userVo);
-            userVos.add(userVo);
+        if (blogIdAndUserId == null) {
+            return resultMap;
+        }
+        for (Map.Entry<Integer, Integer> entry : blogIdAndUserId.entrySet()) {
+            Integer userid = entry.getValue();
+            UserEntity userEntity = new UserEntity();
+            userEntity.setId(Long.valueOf(userid));
+            UserEntity userEntity1 = accountMapper.selectOneAnd(userEntity);
+            resultMap.put(entry.getKey().toString(),userEntity1.getHeader());
         }
 
-
-        return userVos;
+        return resultMap;
     }
 }

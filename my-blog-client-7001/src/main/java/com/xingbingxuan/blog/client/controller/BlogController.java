@@ -3,9 +3,9 @@ package com.xingbingxuan.blog.client.controller;
 
 import com.github.pagehelper.PageInfo;
 import com.xingbingxuan.blog.client.entity.BlogEntity;
-import com.xingbingxuan.blog.client.entity.vo.BlogVo;
 import com.xingbingxuan.blog.client.service.BlogService;
 import com.xingbingxuan.blog.utils.Result;
+import com.xingbingxuan.blog.vo.BlogVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -25,10 +25,6 @@ public class BlogController {
     @Autowired
     private BlogService blogService;
 
-    @GetMapping("/test")
-    public Result test(){
-        return Result.success();
-    }
 
     /**
      * 功能描述:
@@ -113,7 +109,7 @@ public class BlogController {
     /**
      * 功能描述:
      * <p>查询所有博客的个数</p>
-     *
+     * <p>管理员端，统计个数</p>
      * @return : com.xingbingxuan.blog.utils.Result<java.lang.Integer>
      * @author : xbx
      * @date : 2022/5/14 22:46
@@ -128,7 +124,7 @@ public class BlogController {
     /**
      * 功能描述:
      * <p>获取最近一周的博客数量</p>
-     *
+     * <p>管理员端，统计个数</p>
      * @return : com.xingbingxuan.blog.utils.Result
      * @author : xbx
      * @date : 2022/5/14 23:18
@@ -139,5 +135,21 @@ public class BlogController {
         List list = blogService.queryBlogCountByWeek();
 
         return Result.success(list);
+    }
+
+    /**
+     * 功能描述:
+     * <p>主页，获取所有的推荐博客信息</p>
+     *
+     * @return : com.xingbingxuan.blog.utils.Result
+     * @author : xbx
+     * @date : 2022/6/12 11:40
+     */
+    @GetMapping("queryBlogByIndexRecommend")
+    public Result<List<BlogVo>> queryBlogByIndexRecommend(){
+
+        List<BlogVo> blogVos = blogService.queryBlogByIndexRecommend();
+
+        return Result.success(blogVos);
     }
 }
