@@ -10,11 +10,20 @@ import com.xingbingxuan.blog.account.entity.UserEntity;
 import com.xingbingxuan.blog.account.mapper.AccountMapper;
 import com.xingbingxuan.blog.account.service.AccountService;
 import com.xingbingxuan.blog.utils.DateTool;
+import com.xingbingxuan.blog.utils.PublicConfigUtil;
 import com.xingbingxuan.blog.vo.UserVo;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
 
@@ -29,6 +38,8 @@ public class AccountServiceImpl implements AccountService {
     private AccountMapper accountMapper;
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+    @Autowired
+    private RestTemplate restTemplate;
 
     @Override
     public PageInfo<UserEntity> queryAllUserPage(Integer pageNum, Integer pageSize) {
@@ -137,5 +148,43 @@ public class AccountServiceImpl implements AccountService {
         }
 
         return resultMap;
+    }
+
+    @Override
+    public UserVo queryUserPasswordByUsername(String userName) {
+
+
+        UserEntity selectOneAnd = accountMapper.selectPasswordByUserName(userName);
+
+        UserVo userVo = new UserVo();
+        userVo.setUsername(userName);
+        userVo.setPassword(selectOneAnd.getPassword());
+
+        return userVo;
+    }
+
+    @Override
+    public UserVo queryUserInfoByToken(String token) {
+
+        UserVo userVo = new UserVo();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        LinkedMultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.set("token",token);
+
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
+
+        ResponseEntity<Map> post = restTemplate.postForEntity(PublicConfigUtil.OAUTHCHECKTOKENURI, request, Map.class);
+
+        Map body = post.getBody();
+        String userName = (String) body.get("user_name");
+
+        UserEntity userEntity = new UserEntity();
+        userEntity.setUsername(userName);
+        UserEntity user = accountMapper.selectOneAnd(userEntity);
+        BeanUtils.copyProperties(user,userVo);
+
+        return userVo;
     }
 }

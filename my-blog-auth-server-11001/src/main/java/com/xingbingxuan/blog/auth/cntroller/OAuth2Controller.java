@@ -2,10 +2,10 @@ package com.xingbingxuan.blog.auth.cntroller;
 
 import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
+import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.xingbingxuan.blog.auth.feign.AccountFeignService;
-import com.xingbingxuan.blog.utils.CommonTool;
 import com.xingbingxuan.blog.utils.RedisUtil;
 import com.xingbingxuan.blog.utils.Result;
 import com.xingbingxuan.blog.utils.TokenUtil;
@@ -14,11 +14,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 第三方的社交登录 controller
@@ -68,20 +69,33 @@ public class OAuth2Controller {
                 String jwt = JwtUtil.creatJWT(new HashMap<String, Object>() {{
                     put("name", user.get("username").toString());
                 }});*/
+                System.out.println(user);
                 //获取token
-                String token = "user:token:"+TokenUtil.generateToken();
+                String token = "user:token:"+TokenUtil.generateToken("1");
                 //存入redis
                 RedisUtil.set(token,user.toString(),60*60*24*7);
                 //redisTemplate.opsForValue().set(user.get("username"),token , 1, TimeUnit.HOURS);
                 return "index";
             } else {
-                return "login";
+                return "Login";
             }
 
         } else {
-            return "login";
+            return "Login";
         }
 
 
     }
+
+    @RequestMapping("/oauth/login/redirect")
+    @ResponseBody
+    public Map oauthRedirect(@RequestParam("code") String code){
+
+        HashMap<String, String> param = new HashMap<>();
+        param.put("grant_type","authorization_code");
+        String post = HttpUtil.post("http://localhost:11001/oauth/token", String.valueOf(param));
+
+        return null;
+    }
+
 }

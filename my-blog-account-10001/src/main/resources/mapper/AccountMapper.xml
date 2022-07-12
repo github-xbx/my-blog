@@ -146,5 +146,8 @@
         </foreach>
 
     </select>
+    <select id="selectPasswordByUserName" resultType="com.xingbingxuan.blog.account.entity.UserEntity">
+        SELECT username,password FROM `user` WHERE username = #{param1}
+    </select>
 
 </mapper>

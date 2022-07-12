@@ -20,15 +20,28 @@ public class UserLoginController {
     @Autowired
     private AccountFeignService accountFeignService;
 
-    @PostMapping("/login")
-    public String login(UserLoginVo userLoginVo){
+//    @PostMapping("/login")
+//    public String login(UserLoginVo userLoginVo){
+//
+//        System.out.println(userLoginVo);
+//        //远程登录到首页
+//        Result login = accountFeignService.login(userLoginVo);
+//        System.out.println(login.toString());
+//        return "redirect:http://xingbingxaun.com";
+//    }
 
-        System.out.println(userLoginVo);
-        //远程登录到首页
-        Result login = accountFeignService.login(userLoginVo);
-        System.out.println(login.toString());
-        return "redirect:http://xingbingxaun.com";
+
+
+    @GetMapping("success")
+    public String success(){
+
+        return "consent";
     }
 
+    @GetMapping("failure")
+    public String failure(){
+
+        return "login";
+    }
 
 }

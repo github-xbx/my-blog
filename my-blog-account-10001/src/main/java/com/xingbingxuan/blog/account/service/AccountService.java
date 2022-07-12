@@ -89,4 +89,26 @@ public interface AccountService {
      */
     Map<String,Object> queryUserHeaderByIds(Map<Integer,Integer> blogIdAndUserId);
 
+    /**
+     * 功能描述:
+     * <p>根据用户查询用户民和密码，用户oauth的登录</p>
+     *
+     * @param userName
+     * @return : com.xingbingxuan.blog.vo.UserVo
+     * @author : xbx
+     * @date : 2022/6/25 10:33
+     */
+    UserVo queryUserPasswordByUsername(String userName);
+
+    /**
+     * 功能描述:
+     * <p>根据token获取用户的信息</p>
+     *
+     * @param token
+     * @return : com.xingbingxuan.blog.vo.UserVo
+     * @author : xbx
+     * @date : 2022/7/11 22:47
+     */
+    UserVo queryUserInfoByToken(String token);
+
 }

@@ -139,7 +139,7 @@ public class BlogController {
 
     /**
      * 功能描述:
-     * <p>主页，获取所有的推荐博客信息</p>
+     * <p>首页，获取所有的推荐博客信息</p>
      *
      * @return : com.xingbingxuan.blog.utils.Result
      * @author : xbx
@@ -152,4 +152,18 @@ public class BlogController {
 
         return Result.success(blogVos);
     }
+
+    /**
+     * 功能描述:
+     * <p>首页，用户关注的博客</p>
+     *
+     * @return : com.xingbingxuan.blog.utils.Result<java.util.List<com.xingbingxuan.blog.vo.BlogVo>>
+     * @author : xbx
+     * @date : 2022/6/21 22:43
+     */
+    public Result<PageInfo<BlogVo>> queryBlogByUserFollow(){
+
+        return null;
+    }
+
 }

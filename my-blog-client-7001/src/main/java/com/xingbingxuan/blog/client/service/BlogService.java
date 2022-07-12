@@ -2,6 +2,7 @@ package com.xingbingxuan.blog.client.service;
 
 import com.github.pagehelper.PageInfo;
 import com.xingbingxuan.blog.client.entity.BlogEntity;
+import com.xingbingxuan.blog.database.Page;
 import com.xingbingxuan.blog.vo.BlogVo;
 
 
@@ -48,5 +49,17 @@ public interface BlogService {
      * @date : 2022/6/16 22:35
      */
     public List<BlogVo> queryBlogByIndexRecommend();
+
+    /**
+     * 功能描述:
+     * <p>首页，用户关注的博客</p>
+     * 需要登录，登录返回，未登录
+     * @param pageNum  页数
+     * @param pageSize 页面大小
+     * @return : java.util.List<com.xingbingxuan.blog.vo.BlogVo>
+     * @author : xbx
+     * @date : 2022/6/21 22:45
+     */
+    public PageInfo<BlogVo> queryBlogByUserFollow(int pageNum, int pageSize);
 
 }

@@ -56,4 +56,16 @@ public interface AccountMapper {
      * @date : 2022/6/8 22:50
      */
     List<UserEntity> selectAllUserByIds(List ids);
+
+
+    /**
+     * 功能描述:
+     * <p>根据用户名查询密码</p>
+     *
+     * @param username
+     * @return : com.xingbingxuan.blog.account.entity.UserEntity
+     * @author : xbx
+     * @date : 2022/6/26 9:39
+     */
+    UserEntity selectPasswordByUserName(String username);
 }

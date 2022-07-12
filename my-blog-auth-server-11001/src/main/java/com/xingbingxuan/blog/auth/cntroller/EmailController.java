@@ -12,6 +12,6 @@ public class EmailController {
 
     @GetMapping("/auth2/email")
     public String emailAuthPage(){
-        return "redirect:/email.html";
+        return "redirect:/consent.html";
     }
 }

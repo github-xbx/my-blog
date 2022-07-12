@@ -69,10 +69,24 @@ spring:
           filters:
             - RewritePath=/api/admin-account/(?<segment>.*), /user/$\{segment}
             - AdminAuth=true
-
+        #管理员首页路由到客户端
         - id: blog_info_admin_index
           uri: lb://my-blog-client
           predicates:
             - Path=/api/info/admin/**
           filters:
             - RewritePath=/api/info/admin/(?<segment>.*), /blog/admin/$\{segment}
+        #客户端登录路由，oauth2获取token
+        - id: blog_client_oauth2
+          uri: lb://my-blog-account
+          predicates:
+            - Path=/api/userOauth2/**
+          filters:
+            - RewritePath=/api/userOauth2/(?<segment>.*),/oauth2/$\{segment}
+        #账户服务路由
+        - id: blog_account_user
+          uri: lb://my-blog-account
+          predicates:
+            - Path=/api/user/**
+          filters:
+            - RewritePath=/api/user/(?<segment>.*),/user/$\{segment}

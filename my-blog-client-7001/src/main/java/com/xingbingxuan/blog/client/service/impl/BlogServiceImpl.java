@@ -7,8 +7,8 @@ import com.github.pagehelper.PageInfo;
 import com.xingbingxuan.blog.client.entity.BlogEntity;
 import com.xingbingxuan.blog.client.entity.BlogSetEntity;
 import com.xingbingxuan.blog.client.entity.CategoryEntity;
-import com.xingbingxuan.blog.client.entity.LabelEntity;
-import com.xingbingxuan.blog.client.feign.UserFeignService;
+import com.xingbingxuan.blog.client.feign.BlogUserFeignService;
+
 import com.xingbingxuan.blog.client.mapper.BlogMapper;
 import com.xingbingxuan.blog.client.mapper.BlogSetMapper;
 import com.xingbingxuan.blog.client.mapper.CategoryMapper;
@@ -18,8 +18,6 @@ import com.xingbingxuan.blog.utils.DateTool;
 import com.xingbingxuan.blog.utils.TokenUtil;
 import com.xingbingxuan.blog.vo.BlogVo;
 import com.xingbingxuan.blog.vo.LabelVo;
-import com.xingbingxuan.blog.vo.UserVo;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -49,7 +47,8 @@ public class BlogServiceImpl implements BlogService {
     private LabelMapper labelMapper;
 
     @Autowired
-    private UserFeignService userFeignService;
+    private BlogUserFeignService userFeignService;
+
 
 
     @Override
@@ -168,5 +167,19 @@ public class BlogServiceImpl implements BlogService {
         });
 
         return blogVos;
+    }
+
+    @Override
+    public PageInfo<BlogVo> queryBlogByUserFollow(int pageNum, int pageSize) {
+
+        //判断session是否登录，或者登录是否过期
+
+        //获取关注的用户id
+
+        //根据关注的用户id 查询博客并根据时间排序
+
+
+
+        return null;
     }
 }

@@ -5,9 +5,11 @@ import com.xingbingxuan.blog.account.entity.UserEntity;
 import com.xingbingxuan.blog.account.service.AccountService;
 import com.xingbingxuan.blog.utils.Result;
 import com.xingbingxuan.blog.vo.UserVo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +20,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("user")
+@Slf4j
 public class UserController {
 
     @Autowired
@@ -75,5 +78,24 @@ public class UserController {
         Map map = accountService.queryUserHeaderByIds(blogIdAndUserId);
 
         return map;
+    }
+
+    /**
+     * 功能描述:
+     * <p>根据token获取用户的信息</p>
+     *
+     * @param request
+     * @return : com.xingbingxuan.blog.utils.Result
+     * @author : xbx
+     * @date : 2022/7/11 22:37
+     */
+    @GetMapping("userInfo")
+    public Result queryUserInfo(HttpServletRequest request){
+        String token = request.getHeader("Authorization");
+        token = token.substring(token.lastIndexOf(" ")+1);
+        log.info(token);
+        UserVo userVo = accountService.queryUserInfoByToken(token);
+
+        return Result.success(userVo);
     }
 }
