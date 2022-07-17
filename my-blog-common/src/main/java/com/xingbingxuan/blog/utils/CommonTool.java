@@ -1,8 +1,12 @@
 package com.xingbingxuan.blog.utils;
 
-import java.io.IOException;
-import java.io.InputStream;
+import com.sun.istack.internal.Nullable;
+import lombok.SneakyThrows;
 
+import java.io.*;
+
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 /**
@@ -29,5 +33,8 @@ public class CommonTool {
         properties.load(inputStream);
         return properties;
     }
+
+
+
 
 }

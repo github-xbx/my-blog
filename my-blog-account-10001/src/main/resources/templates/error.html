@@ -8,15 +8,12 @@
     <title>oauth github</title>
 </head>
 <body>
-登陆中...
-<script th:inline="javascript">
-    window.onload = function () {
-        var token = [[${token}]];
-        var domain = [[${domain}]];
-        //window.opener.postMessage("Bearer ", "{{ domain }}");
-        window.opener.postMessage( token, domain);
-        window.close();
-    }
+登陆错误，重新登录！！！
+<script>
+    // window.onload = function () {
+    //     window.opener.postMessage("bearer {{ $token }}", "{{ blog.xingbingxuan.com }}");
+    //     window.close();
+    // }
 </script>
 </body>
 </html>

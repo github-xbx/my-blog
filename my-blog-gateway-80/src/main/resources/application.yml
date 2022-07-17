@@ -23,11 +23,6 @@ spring:
             - Path=/blogClient/test
 
 
-        - id: blog_auth
-          uri: lb://my-blog-auth-server
-          predicates:
-            - Host=auth.xingbingxuan.com:81
-            #- Path=/login.html
         #客户端路由
         - id: blog_client
           uri: lb://my-blog-client
@@ -36,6 +31,13 @@ spring:
           filters:
             - RewritePath=/api/blog/(?<segment>.*), /blogClient/$\{segment}
 
+        #用户登录路由  account ：LoginController
+        - id: blog_account_user
+          uri: lb://my-blog-account
+          predicates:
+            - Path=/api/account/user/**
+          filters:
+            - RewritePath=/api/account/user/(?<segment>.*), /user/account/$\{segment}
 
         #管理员登录路由
         - id: blog_account_admin
@@ -83,10 +85,11 @@ spring:
             - Path=/api/userOauth2/**
           filters:
             - RewritePath=/api/userOauth2/(?<segment>.*),/oauth2/$\{segment}
-        #账户服务路由
+        #客户端账户服务路由 account: UserController
         - id: blog_account_user
           uri: lb://my-blog-account
           predicates:
             - Path=/api/user/**
           filters:
             - RewritePath=/api/user/(?<segment>.*),/user/$\{segment}
+            - UserAuth=true

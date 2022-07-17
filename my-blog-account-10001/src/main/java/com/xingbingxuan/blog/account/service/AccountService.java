@@ -111,4 +111,15 @@ public interface AccountService {
      */
     UserVo queryUserInfoByToken(String token);
 
+    /**
+     * 功能描述:
+     * <p>根据用户id 退出登录（登出）</p>
+     *
+     * @param userId
+     * @return : void
+     * @author : xbx
+     * @date : 2022/7/17 22:55
+     */
+    Boolean  logout(Long userId,String token);
+
 }

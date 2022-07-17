@@ -72,6 +72,17 @@ public class RedisUtil {
     }
 
     /**
+     * 普通缓存获取
+     * @param key 键
+     * @return 值
+     */
+    public static Object get(byte[] key) {
+        Jedis jedis = getJedis();
+        Object o = key == null ? null : jedis.get(key);
+        close(jedis);
+        return o ;
+    }
+    /**
      * 删除缓存
      * @param key 可以传一个值 或多个
      */
@@ -84,6 +95,19 @@ public class RedisUtil {
         close(jedis);
     }
 
+    /**
+     * 删除缓存
+     * @param key 可以传一个值 或多个
+     */
+    public static void del(byte[]... key) {
+        Jedis jedis = getJedis();
+        if (key != null && key.length > 0) {
+            //jedis.unlink(key);
+            jedis.del(key);
+
+        }
+        close(jedis);
+    }
 
     /**
      * 判断key是否存在
@@ -103,6 +127,23 @@ public class RedisUtil {
         }
     }
 
+    /**
+     * 判断key是否存在
+     * @param key 键 byte
+     * @return true 存在 false不存在
+     */
+    public static boolean hasKey(byte[] key) {
+        Jedis jedis = getJedis();
+        try {
+            Boolean aBoolean = jedis.exists(key);
+            return aBoolean;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }finally {
+            close(jedis);
+        }
+    }
     /**
      * 普通缓存放入并设置时间
      * @param key   键
@@ -128,7 +169,30 @@ public class RedisUtil {
             close(jedis);
         }
     }
-
+    /**
+     * 普通缓存放入并设置时间
+     * @param key   键 byte[]
+     * @param value 值 byte[]
+     * @param time  时间(秒) time要大于0 如果time小于等于0 将设置无限期
+     * @return true成功 false 失败
+     */
+    public static boolean set(byte[] key, byte[] value, long time) {
+        Jedis jedis = getJedis();
+        try {
+            if (time > 0) {
+                jedis.set(key,value);
+                jedis.expire(key,time);
+            } else {
+                jedis.set(key,  value);
+            }
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }finally {
+            close(jedis);
+        }
+    }
 
     /**
      * 递增+1

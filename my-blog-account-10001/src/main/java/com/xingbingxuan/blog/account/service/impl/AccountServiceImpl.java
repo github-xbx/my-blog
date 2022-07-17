@@ -9,9 +9,9 @@ import com.github.pagehelper.PageInfo;
 import com.xingbingxuan.blog.account.entity.UserEntity;
 import com.xingbingxuan.blog.account.mapper.AccountMapper;
 import com.xingbingxuan.blog.account.service.AccountService;
-import com.xingbingxuan.blog.utils.DateTool;
-import com.xingbingxuan.blog.utils.PublicConfigUtil;
+import com.xingbingxuan.blog.utils.*;
 import com.xingbingxuan.blog.vo.UserVo;
+import lombok.extern.slf4j.Slf4j;
 import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +21,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -32,6 +34,7 @@ import java.util.*;
  * @date : 2022/3/25 20:15
  */
 @Service
+@Slf4j
 public class AccountServiceImpl implements AccountService {
 
     @Autowired
@@ -76,6 +79,7 @@ public class AccountServiceImpl implements AccountService {
 
         if (accessTokenResponse.getStatus() == 200) {
             JSONObject userInfoJson = JSONUtil.parseObj(accessTokenResponse.body());
+            log.info("gitee 返回的用户信息 -> {}",userInfoJson.toString());
             UserEntity userEntity = new UserEntity();
             userEntity.setUsername("gitee_" + userInfoJson.get("name").toString());
             userEntity.setSocialType("gitee");
@@ -164,7 +168,47 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
+    @Transactional(isolation = Isolation.READ_COMMITTED,rollbackFor = {RuntimeException.class,Exception.class})
     public UserVo queryUserInfoByToken(String token) {
+
+
+        UserVo userVo = new UserVo();
+
+        String userId = TokenUtil.getObjectByToken(Base64.getDecoder().decode(token));
+
+        UserEntity userEntity = new UserEntity();
+        userEntity.setId(Long.valueOf(userId));
+        UserEntity user = accountMapper.selectOneAnd(userEntity);
+
+        BeanUtils.copyProperties(user,userVo);
+
+
+        userEntity.setLastLoginTime(new Date());
+        userEntity.setIntegration(user.getIntegration()+1);
+        accountMapper.updateUserById(userEntity);
+
+        return userVo;
+    }
+
+    @Override
+    public Boolean logout(Long userId,String token) {
+
+        Long loginUserId = Long.valueOf(TokenUtil.getObjectByToken(Base64.getDecoder().decode(token)));
+
+        if (loginUserId.equals(userId)){
+            byte[] key = SerializeUtil.serializeKey(TokenUtil.getTokenKey(userId));
+
+            RedisUtil.del(key);
+            return true;
+        }else {
+            return false;
+        }
+
+
+    }
+
+    @Deprecated
+    public UserVo queryUserInfoByToken_1(String token) {
 
         UserVo userVo = new UserVo();
 

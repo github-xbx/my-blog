@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 日期工具类
@@ -70,5 +71,21 @@ public class DateTool {
            list.add(DateToString("yyyy-MM-dd",nowDate.getTime()));
         }
         return list;
+    }
+
+
+    /**
+     * 功能描述:
+     * <p>获取天数的秒</p>
+     *
+     * @param day
+     * @return : java.lang.Long
+     * @author : xbx
+     * @date : 2022/7/16 10:49
+     */
+    public static Long getDayTime(Integer day){
+
+        return Long.valueOf(60*60*24*day);
+
     }
 }

@@ -19,6 +19,20 @@ public class PublicConfigUtil {
 
     public static String OAUTHCHECKTOKENURI;
 
+    public static String GITEE_CLIENTID;
+
+    public static String GITEE_CLIENTSECRET;
+
+    public static String GITEE_REDIRECTURI;
+
+    public static String GITEE_OAUTHTOKENURI;
+
+    /*
+      blog主页的域名
+     */
+    public static String BLOG_HOME_DOMAIN;
+
+
     private static Properties properties;
 
     static {
@@ -29,6 +43,11 @@ public class PublicConfigUtil {
             REDIRECTURI = properties.getProperty("oauth.blog.redirectUri");
             OAUTHTOKENURI = properties.getProperty("oauth.blog.getTokenUrl");
             OAUTHCHECKTOKENURI = properties.getProperty("oauth.blog.checkTokenUrl");
+            GITEE_CLIENTID = properties.getProperty("gitee.clientId");
+            GITEE_CLIENTSECRET = properties.getProperty("gitee.clientSecret");
+            GITEE_REDIRECTURI = properties.getProperty("gitee.redirectUri");
+            GITEE_OAUTHTOKENURI = properties.getProperty("gitee.giteeOauthTokenUrl");
+            BLOG_HOME_DOMAIN = properties.getProperty("blog.home.domain");
         } catch (IOException e) {
             e.printStackTrace();
         }

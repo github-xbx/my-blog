@@ -98,4 +98,31 @@ public class UserController {
 
         return Result.success(userVo);
     }
+
+    /**
+     * 功能描述:
+     * <p>用户的登出操作</p>
+     *
+     * @param param
+     * @return : com.xingbingxuan.blog.utils.Result
+     * @author : xbx
+     * @date : 2022/7/17 22:58
+     */
+    @PostMapping("logout")
+    public Result userLogout(@RequestBody Map param, HttpServletRequest request){
+
+        String token = request.getHeader("Authorization");
+
+        Integer userId = (Integer) param.get("userId");
+
+        Boolean aBoolean = accountService.logout(Long.valueOf(userId), token);
+
+        if (aBoolean){
+            return Result.success(true);
+        }else {
+            return Result.error(400,"登出失败！！！");
+        }
+
+
+    }
 }

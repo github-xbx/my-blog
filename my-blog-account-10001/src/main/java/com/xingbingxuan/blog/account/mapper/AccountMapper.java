@@ -68,4 +68,14 @@ public interface AccountMapper {
      * @date : 2022/6/26 9:39
      */
     UserEntity selectPasswordByUserName(String username);
+
+    /**
+     * 功能描述:
+     * <p>根据id更改用户的信息</p>
+     *
+     * @return : int
+     * @author : xbx
+     * @date : 2022/7/17 18:16
+     */
+    int updateUserById(UserEntity userEntity);
 }
