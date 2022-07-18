@@ -3,7 +3,6 @@
 
 *.css linguist-language=css
 *.html linguist-language=html
-*.scss linguist-language=scss
 *.js linguist-language=js
 
 *.pom linguist-language=pom
