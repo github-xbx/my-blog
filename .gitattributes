@@ -1,0 +1,11 @@
+
+*.java linguist-language=java
+
+*.css linguist-language=css
+*.html linguist-language=html
+*.scss linguist-language=scss
+*.js linguist-language=js
+
+*.pom linguist-language=pom
+*.yml linguist-language=yml
+*.yaml linguist-language=yml
