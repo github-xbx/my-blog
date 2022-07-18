@@ -13,4 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 public interface CommentFeignService {
     @GetMapping("/blogClient/message/count")
     public Result<Integer> queryCommentCount();
+
+    @GetMapping("/blogClient/queryCommentCountByWeek")
+    public Result queryCommentCountByWeek();
 }

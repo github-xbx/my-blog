@@ -1,12 +1,12 @@
 package com.xingbingxuan.blog.utils;
 
-import cn.hutool.core.util.IdUtil;
+import com.sun.istack.internal.Nullable;
+import lombok.SneakyThrows;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
+import java.io.*;
+
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 /**
@@ -15,33 +15,6 @@ import java.util.Properties;
  * @date : 2022/4/4 16:31
  */
 public class CommonTool {
-
-    /**
-     * 功能描述:
-     * <p>获取当前时间</p>
-     *
-     * @return : java.util.Date
-     * @author : xbx
-     * @date : 2022/4/21 22:11
-     */
-    public static Date getNowTime(){
-        return Calendar.getInstance().getTime();
-    }
-
-
-    /**
-     * 功能描述:
-     * <p>h获取当前时间的字符串，根据参数的格式</p>
-     *
-     * @param stringFormat yyyyMMddHHmmss 、yyyy-MM-dd HH:mm:ss
-     * @return : java.lang.String
-     * @author : xbx
-     * @date : 2022/5/8 21:42
-     */
-    public static String getNowTimeString(String stringFormat){
-
-        return new SimpleDateFormat(stringFormat).format(getNowTime());
-    }
 
 
     /**
@@ -60,5 +33,8 @@ public class CommonTool {
         properties.load(inputStream);
         return properties;
     }
+
+
+
 
 }

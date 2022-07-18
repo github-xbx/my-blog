@@ -2,8 +2,7 @@ package com.xingbingxuan.blog.gateway.filter;
 
 import cn.hutool.json.JSON;
 import cn.hutool.json.JSONObject;
-import com.xingbingxuan.blog.utils.Result;
-import com.xingbingxuan.blog.utils.TokenUtil;
+import com.xingbingxuan.blog.utils.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
@@ -21,10 +20,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author : xbx
@@ -64,6 +60,8 @@ public class UserAuthGatewayFilterFactory extends AbstractGatewayFilterFactory<F
                 String token = headers.getFirst(TOKEN);
                 log.info("token => "+token);
 
+
+
                 //1.token 不存在
                 //hasTest 空返回false 不空 true
                 if (!StringUtils.hasText(token)){
@@ -74,13 +72,33 @@ public class UserAuthGatewayFilterFactory extends AbstractGatewayFilterFactory<F
                     return response.writeWith(Mono.just(buffer));
                 }
                 //2.token存在验证其是否过期，以及是否正确
-                Boolean aBoolean = TokenUtil.authToken(token);
+                //解析token
+                String userId = TokenUtil.getObjectByToken(Base64.getDecoder().decode(token));
+
+                String tokenKey = TokenUtil.getTokenKey(userId);
+
+                //Boolean aBoolean = TokenUtil.authToken(tokenKey);
+                boolean aBoolean = RedisUtil.hasKey(SerializeUtil.serializeKey(tokenKey));
+
                 if (!aBoolean){
                     log.info("token 已失效");
-                    byte[] bytes = unAuthorizedJson(401,"用户登录以过期，请重新登录。。。").getBytes();
+                    byte[] bytes = unAuthorizedJson(401,"用户没有登录，请重新登录。。。").getBytes();
                     response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
                     DataBuffer buffer = response.bufferFactory().wrap(bytes);
                     return response.writeWith(Mono.just(buffer));
+                }else {
+                    //tokenKey存在
+                    byte[] tokenValue = (byte[]) RedisUtil.get(SerializeUtil.serializeKey(tokenKey));
+                    String o = Base64.getEncoder().encodeToString(tokenValue);
+
+                    log.info("redis中的token -> {}",o);
+                    if (!o.equals(token)){
+                        log.info("token 已失效");
+                        byte[] bytes = unAuthorizedJson(401,"用户登录以过期，请重新登录。。。").getBytes();
+                        response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
+                        DataBuffer buffer = response.bufferFactory().wrap(bytes);
+                        return response.writeWith(Mono.just(buffer));
+                    }
                 }
 
 

@@ -13,4 +13,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 public interface BlogFeignService {
     @GetMapping("/blogClient/adminBlogCount")
     public Result<Integer> queryBlogCount();
+
+    @GetMapping("/blogClient/queryBlogCountByWeek")
+    public Result queryBlogCountByWeek();
+
 }

@@ -32,17 +32,27 @@ public class BlogVo {
     private String blogContent;
     private String blogImg;
     private Integer blogState;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date blogInsertTime;
     private Integer blogTid;
 
     /*类别*/
-    private Integer seriesId;
-    private String seriesName;
+    private Integer categoryId;
+    private String categoryName;
 
     /*标签*/
     private List<LabelEntity> label;
-//    private Integer labelId;
-//    private String labelName;
+
+    /*用户头像*/
+    private String userHeader;
+
+    /*首页推荐设置字段*/
+    private Integer indexSetImage;
+
+    private Integer indexSetList;
+
+    private Integer indexSetRound;
 
 
 }

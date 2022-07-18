@@ -14,6 +14,37 @@ import java.util.Properties;
  */
 public class TokenUtil {
 
+
+
+
+    /**
+     * 功能描述:
+     * <p>获取存在redis中的token的key</p>
+     *
+     * @param o
+     * @return : java.lang.String
+     * @author : xbx
+     * @date : 2022/7/16 23:27
+     */
+    public static String getTokenKey(Object o){
+        return "user:token:"+o.toString();
+    }
+    /**
+     * 功能描述:
+     * <p>解析token中的用户信息</p>
+     *
+     * @param token
+     * @return : java.lang.String
+     * @author : xbx
+     * @date : 2022/7/16 23:30
+     */
+    public static String getObjectByToken(byte[] token){
+
+        String tokenStr = (String) SerializeUtil.deserializeObject(token);
+
+        tokenStr = tokenStr.substring(0,tokenStr.lastIndexOf("-"));
+        return tokenStr;
+    }
     /**
      * 功能描述:
      * <p>获取token</p>
@@ -24,10 +55,10 @@ public class TokenUtil {
      */
     public static String generateToken(String username){
         String token = null;
-        String data = username +":"+ CommonTool.getNowTimeString("yyyyMMddHHmmss");
+        String data = username +":"+ DateTool.getNowTimeString("yyyyMMddHHmmss");
         try {
             Properties properties = CommonTool.getPropertiesContent("key.properties");
-            token = encryption(data,properties.getProperty("privateKey"),properties.getProperty("publicKey"));
+            token = encryption( username,properties.getProperty("privateKey"),properties.getProperty("publicKey"));
         } catch (Exception e) {
             e.printStackTrace();
             return null;

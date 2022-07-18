@@ -8,9 +8,43 @@ spring:
     nacos:
       discovery:
         server-addr: 127.0.0.1:8848
+  main:
+    allow-bean-definition-overriding: true
+  datasource:
+    # springboot 2.0 后修改了默认的数据库连接池为hikari
+    type: com.zaxxer.hikari.HikariDataSource
+    # com.mysql.jdbc.Driver 是 mysql-connector-java 5中的，
+    # com.mysql.cj.jdbc.Driver 是 mysql-connector-java 6中的
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # oauth2 只识别jdbc-url 所以写url会报错
+    jdbc-url: jdbc:mysql://localhost:3306/myblog_oauth?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    username: root
+    password: mysql
+    hikari:
+      minimum-idle: 5
+      idle-timeout: 600000
+      maximum-pool-size: 10
+      auto-commit: true
+      pool-name: MyHikariCP
+      max-lifetime: 1800000
+      connection-timeout: 30000
+      connection-test-query: SELECT 1
+
+
+
   redis:
     host: localhost
     port: 6379
     database: 1 #redis 使用的数据库
 
+
+
+application:
+  security:
+    excludeUrls: #excludeUrls中存放白名单地址
+      - "/favicon.ico"
+      - "/static/**"
+      - "/assets/**"
+      - "/loginHtml"
+      - "/oauth/check_token"
 

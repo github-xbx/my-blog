@@ -1,10 +1,8 @@
 package com.xingbingxuan.blog.client.mapper;
 
-import com.github.pagehelper.PageInfo;
+
 import com.xingbingxuan.blog.client.entity.BlogEntity;
-import com.xingbingxuan.blog.client.entity.and.BlogAndSeries;
-import com.xingbingxuan.blog.client.entity.vo.BlogVo;
-import com.xingbingxuan.blog.database.Page;
+import com.xingbingxuan.blog.vo.BlogVo;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -117,5 +115,18 @@ public interface BlogMapper {
      * @date : 2022/5/3 11:51
      */
     public List<BlogVo> selectAllBlogAndLabel();
+
+    /**
+     * 功能描述:
+     * <p>查询最近一周新增的博客</p>
+     *
+     * @return : java.util.List<com.xingbingxuan.blog.client.entity.BlogEntity>
+     * @author : xbx
+     * @date : 2022/5/14 23:06
+     */
+    public List<BlogEntity> selectCountByWeek();
+
+
+    public List<BlogVo> selectAllByBlogIds(List<Integer> blogIds);
 
 }

@@ -5,19 +5,29 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.xingbingxuan.blog.client.entity.BlogEntity;
-import com.xingbingxuan.blog.client.entity.SeriesEntity;
-import com.xingbingxuan.blog.client.entity.and.BlogAndSeries;
-import com.xingbingxuan.blog.client.entity.vo.BlogVo;
+import com.xingbingxuan.blog.client.entity.BlogSetEntity;
+import com.xingbingxuan.blog.client.entity.CategoryEntity;
+import com.xingbingxuan.blog.client.feign.BlogUserFeignService;
+
 import com.xingbingxuan.blog.client.mapper.BlogMapper;
-import com.xingbingxuan.blog.client.mapper.SeriesMapper;
+import com.xingbingxuan.blog.client.mapper.BlogSetMapper;
+import com.xingbingxuan.blog.client.mapper.CategoryMapper;
+import com.xingbingxuan.blog.client.mapper.LabelMapper;
 import com.xingbingxuan.blog.client.service.BlogService;
-import com.xingbingxuan.blog.database.Page;
+import com.xingbingxuan.blog.utils.DateTool;
 import com.xingbingxuan.blog.utils.TokenUtil;
+import com.xingbingxuan.blog.vo.BlogVo;
+import com.xingbingxuan.blog.vo.LabelVo;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * @author : xbx
@@ -29,7 +39,17 @@ public class BlogServiceImpl implements BlogService {
     @Autowired
     private BlogMapper blogMapper;
     @Autowired
-    private SeriesMapper seriesMapper;
+    private CategoryMapper categoryMapper;
+
+    @Autowired
+    private BlogSetMapper blogSetMapper;
+    @Autowired
+    private LabelMapper labelMapper;
+
+    @Autowired
+    private BlogUserFeignService userFeignService;
+
+
 
     @Override
     public PageInfo<BlogEntity> select(int pageNum,int pageSize) {
@@ -46,8 +66,8 @@ public class BlogServiceImpl implements BlogService {
 
         List<BlogVo> blogVos = blogMapper.selectAllBlogAndLabel();
         blogVos.forEach(blogVo -> {
-            SeriesEntity seriesEntity = seriesMapper.selectAllByBId(blogVo.getBlogId());
-            BeanUtils.copyProperties(seriesEntity,blogVo);
+            CategoryEntity categoryEntity = categoryMapper.selectAllByBId(blogVo.getBlogId());
+            BeanUtils.copyProperties(categoryEntity,blogVo);
         });
 
         PageInfo<BlogVo> blogAndSeriesPageInfo = new PageInfo<>(blogVos);
@@ -92,5 +112,74 @@ public class BlogServiceImpl implements BlogService {
     public Boolean update(BlogEntity blogEntity) {
         Integer updateBlog = blogMapper.updateBlog(blogEntity);
         return updateBlog > 0;
+    }
+
+    @Override
+    public List queryBlogCountByWeek() {
+
+        List<BlogEntity> blogs = blogMapper.selectCountByWeek();
+
+        List<String> time = DateTool.getThisWeekTime();
+
+        List<Map<String,Object>> lists = new ArrayList<>();
+
+        for (String s : time) {
+
+            long count = blogs.stream().filter(blog -> {
+                String createTime = DateTool.DateToString("yyyy-MM-dd", blog.getBInsertTime());
+                return createTime.equals(s);
+            }).count();
+            lists.add(new HashMap<String,Object>(){{
+                put("date",s);
+                put("count",count);
+            }});
+
+        }
+
+        return lists;
+
+
+    }
+
+    @Override
+    public List<BlogVo> queryBlogByIndexRecommend() {
+
+        //查询推荐的博客
+        List<BlogSetEntity> blogSets = blogSetMapper.selectAll();
+        Map<Integer, BlogSetEntity> setEntityMap = blogSets.stream().collect(Collectors.toMap(BlogSetEntity::getBlogId, Function.identity()));
+
+        List<Integer> blogIds = blogSets.stream().map(blogSetEntity -> blogSetEntity.getBlogId()).collect(Collectors.toList());
+        //获取博客信息
+        List<BlogVo> blogVos = blogMapper.selectAllByBlogIds(blogIds);
+
+        System.out.println(blogVos);
+        //根据博客信息获取用户头像
+        Map<Integer, Integer> map = blogVos.stream().collect(Collectors.toMap(BlogVo::getBlogId, BlogVo::getBlogUid));
+
+        Map header = userFeignService.queryUserHeaderByIds(map);
+
+        //组装BlogVo返回
+        blogVos.stream().forEach(blogVo -> {
+            BeanUtils.copyProperties(setEntityMap.get(blogVo.getBlogId()),blogVo);
+            blogVo.setUserHeader((String) header.get(blogVo.getBlogId().toString()));
+            List<LabelVo> labels = labelMapper.selectAllByBlogId(blogVo.getBlogId());
+            blogVo.setLabel(labels);
+        });
+
+        return blogVos;
+    }
+
+    @Override
+    public PageInfo<BlogVo> queryBlogByUserFollow(int pageNum, int pageSize) {
+
+        //判断session是否登录，或者登录是否过期
+
+        //获取关注的用户id
+
+        //根据关注的用户id 查询博客并根据时间排序
+
+
+
+        return null;
     }
 }

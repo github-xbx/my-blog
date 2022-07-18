@@ -21,8 +21,8 @@
             <if test="sign != null and sign != '' ">
                 sign,
             </if>
-            <if test="integartion != null and integartion != '' ">
-                integartion,
+            <if test="integration != null and integration != '' ">
+                integration,
             </if>
             <if test="growth != null and growth != '' ">
                 growth,
@@ -56,8 +56,8 @@
             <if test="sign != null and sign != '' ">
                 #{sign},
             </if>
-            <if test="integartion != null and integartion != '' ">
-                #{integartion},
+            <if test="integration != null and integration != '' ">
+                #{integration},
             </if>
             <if test="growth != null and growth != '' ">
                 #{growth},
@@ -74,9 +74,60 @@
             #{createTime},
         </trim>
     </insert>
+    <update id="updateUserById" parameterType="UserEntity">
+        UPDATE `user` set
+        <trim prefix=" " suffix=" " suffixOverrides=",">
+            <if test="username != null and username != ''">
+                username = #{username},
+            </if>
+            <if test="password != null and password != ''">
+                 password = #{password},
+            </if>
+            <if test="nickname != null and nickname != ''">
+                 nickname = #{nickname},
+            </if>
+            <if test="mobile != null and mobile != '' ">
+                 mobile = #{mobile},
+            </if>
+            <if test="email != null and email != '' ">
+                 email = #{email},
+            </if>
+            <if test="header != null and header != '' ">
+                 header = #{header},
+            </if>
+            <if test="sex != null and sex != '' ">
+                 sex = #{sex},
+            </if>
+            <if test="sign != null and sign != '' ">
+                 sign = #{sign},
+            </if>
+            <if test="integration != null and integration != '' ">
+                integration = #{integration},
+            </if>
+            <if test="growth != null and growth != '' ">
+                 growth = #{growth},
+            </if>
+            <if test="status != null and status != '' ">
+                 status = #{status},
+            </if>
+            <if test="socialType != null and socialType != '' ">
+                 social_type = #{socialType},
+            </if>
+            <if test="socialUid != null and socialUid != '' ">
+                 social_uid = #{socialUid},
+            </if>
+            <if test="createTime != null and createTime != '' ">
+                 create_time = #{createTime},
+            </if>
+            <if test="lastLoginTime != null  ">
+                 last_login_time = #{lastLoginTime}
+            </if>
+        </trim>
+        WHERE id = #{id}
+    </update>
 
     <select id="selectOneAnd" parameterType="UserEntity" resultType="UserEntity">
-        select id,username,nickname,mobile,email,header,sex,sign,integration,growth,status,social_type,social_uid,create_time
+        select id,username,nickname,mobile,email,header,sex,sign,integration,growth,status,social_type,social_uid,create_time,last_login_time
         from  user
         WHERE 1=1
         <if test="id != null and id != '' ">
@@ -106,8 +157,8 @@
         <if test="sign != null and sign != '' ">
             and sign = #{sign}
         </if>
-        <if test="integartion != null and integartion != '' ">
-            and integartion = #{integartion}
+        <if test="integration != null and integration != '' ">
+            and integration = #{integration}
         </if>
         <if test="growth != null and growth != '' ">
             and growth = #{growth}
@@ -127,7 +178,27 @@
     </select>
 
     <select id="selectAccountCount" resultType="java.lang.Integer">
-        SELECT COUNT(*) FROM  user
+        SELECT COUNT(*) FROM  `user`
+    </select>
+
+    <select id="selectByThisWeek" resultType="UserEntity">
+        SELECT create_time FROM `user` WHERE DATE_SUB(CURDATE(), INTERVAL 7 DAY) &lt;= create_time
+    </select>
+
+    <select id="selectAllUser" resultType="com.xingbingxuan.blog.account.entity.UserEntity">
+        select id,username,nickname,mobile,email,header,sex,sign,integration,growth,status,social_type,social_uid,create_time
+        from  user
+    </select>
+    <!-- 注：list 为参数的书写方式-->
+    <select id="selectAllUserByIds" resultType="com.xingbingxuan.blog.account.entity.UserEntity">
+        SELECT id,username,header,create_time FROM `user` WHERE id IN
+        <foreach index="index" collection="list" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+
+    </select>
+    <select id="selectPasswordByUserName" resultType="com.xingbingxuan.blog.account.entity.UserEntity">
+        SELECT username,password FROM `user` WHERE username = #{param1}
     </select>
 
 </mapper>

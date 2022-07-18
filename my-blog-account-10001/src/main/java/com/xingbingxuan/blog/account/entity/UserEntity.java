@@ -1,7 +1,9 @@
 package com.xingbingxuan.blog.account.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -9,7 +11,7 @@ import java.util.Date;
  * @date : 2022/3/24 22:11
  */
 @Data
-public class UserEntity {
+public class UserEntity implements Serializable {
 
     private Long id;
 
@@ -32,7 +34,7 @@ public class UserEntity {
     private String sign;
 
     //积分
-    private Integer integartion;
+    private Integer integration;
 
     //成长值
     private Integer growth;
@@ -45,5 +47,9 @@ public class UserEntity {
     private String socialUid;
 
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date lastLoginTime;
 }

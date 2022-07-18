@@ -15,6 +15,20 @@
         </association>-->
     </resultMap>
 
+    <update id="updateCommentBy">
+        UPDATE `comment` SET
+        <trim suffix="" prefix="" suffixOverrides=",">
+            <if test=" commentFlag != null">
+                comment_flag = #{commentFlag},
+            </if>
+            <if test="commentContent != null and commentContent != ''">
+                comment_content = #{commentContent}
+            </if>
+        </trim>
+        WHERE
+            comment_id = #{commentId}
+    </update>
+
     <select id="selectByBid" resultMap="CommentResult">
         SELECT * FROM comment WHERE comment_bid = #{blogId}
     </select>
@@ -26,4 +40,25 @@
     <select id="selectCommentCount" resultType="Integer">
         SELECT COUNT(*) FROM comment
     </select>
+    <select id="selectCountByWeek" resultType="CommentEntity">
+        SELECT comment_time FROM `comment` WHERE DATE_SUB(CURDATE(), INTERVAL 7 DAY) &lt;= comment_time
+    </select>
+
+    <select id="selectAllComment" resultType="CommentVo">
+        SELECT c.* ,b.b_title FROM `comment` AS c LEFT JOIN `blog` AS b ON b.b_id = c.comment_bid
+        <where>
+            1 = 1
+            <if test="search != null and search != ''">
+                AND b.b_title LIKE CONCAT('%',#{search},'%')
+                OR c.comment_name LIKE CONCAT('%',#{search},'%')
+            </if>
+        </where>
+
+    </select>
+    <select id="selectAllByCommentParentId" resultType="CommentVo">
+        SELECT c.* ,b.b_title FROM `comment` AS c LEFT JOIN `blog` AS b ON b.b_id = c.comment_bid WHERE c.comment_parent_id = #{param1}
+
+    </select>
+
+
 </mapper>

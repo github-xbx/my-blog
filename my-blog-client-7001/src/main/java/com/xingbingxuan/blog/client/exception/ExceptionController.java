@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver;
 
+import java.sql.SQLSyntaxErrorException;
+
 /**
  * @author : xbx
  * @date : 2022/4/4 23:07
@@ -41,12 +43,28 @@ public class ExceptionController {
         return Result.error(401,e.getBindingResult().getFieldError().getDefaultMessage());
     }
 
+
+
+//    @ResponseBody
+//    @ExceptionHandler(Exception.class)
+//    public Result Exception(Exception e){
+//        log.error(e.getMessage());
+//        System.out.println(111);
+//        return Result.error(500,e.getMessage());
+//    }
+
     @ResponseBody
-    @ExceptionHandler(Exception.class)
-    public Result Exception(Exception e){
+    @ExceptionHandler(SQLSyntaxErrorException.class)
+    public Result SQLSyntaxErrorException(SQLSyntaxErrorException e){
         log.error(e.getMessage());
-        return Result.error(500,e.getMessage());
+        return Result.error(500,"sql错误！！！");
     }
 
-
+    @ResponseBody
+    @ExceptionHandler(NullPointerException.class)
+    public Result NullPointerException(NullPointerException e){
+        log.error(e.getMessage());
+        e.printStackTrace();
+        return Result.error(500,"空指针异常！！！");
+    }
 }

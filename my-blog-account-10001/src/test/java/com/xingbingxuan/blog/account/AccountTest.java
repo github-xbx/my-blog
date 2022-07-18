@@ -10,6 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * @author : xbx
@@ -30,10 +31,8 @@ public class AccountTest {
     public void test003(){
 
 
-       /* HashMap<String, Object> hashMap = new HashMap<>();
-        hashMap.put("name","username");
-        String s = JwtUtil.creatJWT(hashMap);
-        System.out.println(s);*/
+        List<UserEntity> userEntities = accountMapper.selectAllUser();
+        userEntities.forEach(System.out::println);
     }
 
     @Test

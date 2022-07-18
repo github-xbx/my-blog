@@ -30,6 +30,8 @@ public class CommentEntity {
 
     private Integer commentParentId;
 
+    private Integer commentFlag;
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date commentTime;
 

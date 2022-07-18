@@ -3,10 +3,13 @@ package com.xingbingxuan.blog.test;
 import cn.hutool.core.codec.Base64;
 import cn.hutool.crypto.SecureUtil;
 import com.xingbingxuan.blog.utils.CommonTool;
+import com.xingbingxuan.blog.utils.DateTool;
 import com.xingbingxuan.blog.utils.TokenUtil;
 
 import java.io.IOException;
 import java.security.KeyPair;
+import java.util.Date;
+import java.util.List;
 import java.util.Properties;
 
 /**
@@ -19,14 +22,20 @@ public class CommonTest {
 
     public static void main(String[] args) throws InterruptedException, IOException {
 
-        String token = TokenUtil.generateToken("admin");
-        System.out.println(token);
 
-        String content = TokenUtil.getTokenContent(token);
-        System.out.println(content);
+        List<String> thisWeekTime = DateTool.getThisWeekTime();
 
-        String substring = content.substring(0, content.indexOf(":"));
-        System.out.println(substring);
+        System.out.println(thisWeekTime);
+
+
+//        String token = TokenUtil.generateToken("admin");
+//        System.out.println(token);
+//
+//        String content = TokenUtil.getTokenContent(token);
+//        System.out.println(content);
+//
+//        String substring = content.substring(0, content.indexOf(":"));
+//        System.out.println(substring);
 
 //        Properties properties = CommonTool.getPropertiesContent("key.properties");
 //        String publicKey = properties.getProperty("publicKey");
