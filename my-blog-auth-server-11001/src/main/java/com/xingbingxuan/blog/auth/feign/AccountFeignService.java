@@ -2,6 +2,7 @@ package com.xingbingxuan.blog.auth.feign;
 
 import com.xingbingxuan.blog.auth.vo.UserLoginVo;
 import com.xingbingxuan.blog.utils.Result;
+import com.xingbingxuan.blog.vo.UserVo;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,4 +21,7 @@ public interface AccountFeignService {
 
     @PostMapping("/account/giteeLogin")
     public Result giteeLogin(@RequestBody String accessToken);
+
+    @PostMapping("/oauth2/userLogin")
+    public Result<UserVo> userLogin(@RequestBody String userName);
 }

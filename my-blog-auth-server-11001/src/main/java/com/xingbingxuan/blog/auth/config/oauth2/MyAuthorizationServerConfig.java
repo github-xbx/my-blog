@@ -53,7 +53,7 @@ public class MyAuthorizationServerConfig extends AuthorizationServerConfigurerAd
      * 客户端详情从数据库取
      * @return
      */
-    @Bean
+    //@Bean
     public ClientDetailsService clientDetailsService(){
         return new JdbcClientDetailsService(dataSource());
     }

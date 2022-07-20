@@ -43,7 +43,16 @@ public class OAuth2Controller {
     private RedisTemplate redisTemplate;
 
 
-    @GetMapping("/oauth2/gitee/success")
+    /**
+     * 功能描述:
+     * <p>gitee 回调函数</p>
+     *
+     * @param code
+     * @return : java.lang.String
+     * @author : xbx
+     * @date : 2022/7/19 21:36
+     */
+    @GetMapping("/callback/gitee")
     public String oauth2GiteeSuccess(@RequestParam("code") String code) {
 
         //将code换区accessToken
@@ -65,16 +74,12 @@ public class OAuth2Controller {
 
             if (result.getCode() == 200) {
                 JSONObject user = JSONUtil.parseObj(result.getObject());
-                /*//获取jwt token
-                String jwt = JwtUtil.creatJWT(new HashMap<String, Object>() {{
-                    put("name", user.get("username").toString());
-                }});*/
+
                 System.out.println(user);
                 //获取token
                 String token = "user:token:"+TokenUtil.generateToken("1");
                 //存入redis
                 RedisUtil.set(token,user.toString(),60*60*24*7);
-                //redisTemplate.opsForValue().set(user.get("username"),token , 1, TimeUnit.HOURS);
                 return "index";
             } else {
                 return "Login";
