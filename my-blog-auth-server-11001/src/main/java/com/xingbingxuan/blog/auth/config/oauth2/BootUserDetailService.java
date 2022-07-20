@@ -1,11 +1,10 @@
 package com.xingbingxuan.blog.auth.config.oauth2;
 
-import ch.qos.logback.classic.Logger;
 import com.xingbingxuan.blog.auth.feign.AccountFeignService;
-import com.xingbingxuan.blog.auth.feign.Oauth2UserFeignService;
 import com.xingbingxuan.blog.utils.Result;
 import com.xingbingxuan.blog.vo.UserVo;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -13,19 +12,18 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Slf4j
 @Component
 public class BootUserDetailService implements UserDetailsService {
 
     @Autowired
-    private Oauth2UserFeignService oauth2UserFeignService;
+    private AccountFeignService accountFeignService;
 
-    private Logger logger = (Logger) LoggerFactory.getLogger(getClass());
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -35,7 +33,7 @@ public class BootUserDetailService implements UserDetailsService {
         List<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(authority);
 
-        Result<UserVo> oauthLogin = oauth2UserFeignService.userLogin(username);
+        Result<UserVo> oauthLogin = accountFeignService.userLogin(username);
         if (oauthLogin.getCode() != 200){
             throw new UsernameNotFoundException("登录错误，重新登录。。。");
         }

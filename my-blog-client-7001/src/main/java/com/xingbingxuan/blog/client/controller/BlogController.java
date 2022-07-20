@@ -86,25 +86,7 @@ public class BlogController {
 
     }
 
-    /**
-     * 功能描述:
-     * <p>根据token中用户信息获取用户的文章数</p>
-     *
-     * @param Authorization 请求头用户的token
-     * @return : com.xingbingxuan.blog.utils.Result<java.lang.Integer>
-     *
-     * @author : xbx
-     * @date : 2022/4/21 22:23
-     */
-    @GetMapping("blogCount")
-    public Result<Integer> queryBlogCountByUserId(@RequestHeader String Authorization){
 
-        //获取token = Authorization
-        System.out.println(Authorization);
-        //根据用户信息产询用户的文章数
-        Integer count = blogService.selectBlogCountByToken(Authorization);
-        return Result.success(count);
-    }
 
     /**
      * 功能描述:
@@ -153,17 +135,6 @@ public class BlogController {
         return Result.success(blogVos);
     }
 
-    /**
-     * 功能描述:
-     * <p>首页，用户关注的博客</p>
-     *
-     * @return : com.xingbingxuan.blog.utils.Result<java.util.List<com.xingbingxuan.blog.vo.BlogVo>>
-     * @author : xbx
-     * @date : 2022/6/21 22:43
-     */
-    public Result<PageInfo<BlogVo>> queryBlogByUserFollow(){
 
-        return null;
-    }
 
 }
