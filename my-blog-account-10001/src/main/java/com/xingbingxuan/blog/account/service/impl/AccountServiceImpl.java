@@ -28,6 +28,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author : xbx
@@ -205,6 +206,45 @@ public class AccountServiceImpl implements AccountService {
         }
 
 
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public UserVo isAccount(Map param) {
+
+        //封装用户信息
+        UserEntity userEntity = null;
+
+
+        UserEntity selectUser = new UserEntity();
+        selectUser.setUsername((String) param.get("username"));
+        userEntity = this.accountMapper.selectOneAnd(selectUser);
+
+        if (userEntity != null){
+            userEntity.setIntegration(userEntity.getIntegration() +1);
+            userEntity.setLastLoginTime(Calendar.getInstance().getTime());
+            this.accountMapper.updateUserById(userEntity);
+
+        }else { //添加
+            userEntity = new UserEntity();
+            userEntity.setHeader((String) param.get("header"));
+            userEntity.setCreateTime(Calendar.getInstance().getTime());
+            userEntity.setLastLoginTime(Calendar.getInstance().getTime());
+            userEntity.setUsername((String) param.get("username"));
+            userEntity.setPassword(new BCryptPasswordEncoder().encode("00000000"));//默认密码
+            userEntity.setSocialUid((String) param.get("socialUid"));
+            userEntity.setSocialType((String) param.get("socialType"));
+            this.accountMapper.insertAccount(userEntity);
+
+        }
+
+
+        log.info("user -> {}",userEntity);
+        UserVo userVo = new UserVo();
+        BeanUtils.copyProperties(userEntity,userVo);
+
+
+        return userVo;
     }
 
     @Deprecated

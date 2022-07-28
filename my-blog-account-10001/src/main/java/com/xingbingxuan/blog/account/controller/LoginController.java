@@ -63,13 +63,14 @@ public class LoginController {
     /**
      * 功能描述:
      * <p>第三方登录，gitee登录</p>
-     *
+     * 暂时弃用，回头会删除，现单独整合到第三方服务中去
      * @param code
      * @return : org.springframework.web.servlet.ModelAndView
      * @author : xbx
      * @date : 2022/7/16 17:14
      */
     @GetMapping("/oauth2/gitee/success")
+    @Deprecated
     public ModelAndView oauth2GiteeSuccess(@RequestParam("code") String code) throws Exception {
 
         ModelAndView modelAndView = new ModelAndView();

@@ -11,10 +11,11 @@
 登陆中...
 <script th:inline="javascript">
     window.onload = function () {
-        var token = [[${token}]];
+        var userInfo = [[${userInfo}]];
         var domain = [[${domain}]];
         //window.opener.postMessage("Bearer ", "{{ domain }}");
-        window.opener.postMessage( token, domain);
+        console.log(userInfo)
+        window.opener.postMessage( userInfo, domain);
         window.close();
     }
 </script>
