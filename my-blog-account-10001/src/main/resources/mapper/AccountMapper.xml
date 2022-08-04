@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.xingbingxuan.blog.account.mapper.AccountMapper">
-    <insert id="insertAccount" parameterType="UserEntity" >
+    <insert id="insertAccount" parameterType="UserEntity" useGeneratedKeys="true" keyProperty="id">
         insert into user
         <trim prefix="(" suffix=")" suffixOverrides=",">
             username,
@@ -74,6 +74,12 @@
             #{createTime},
         </trim>
     </insert>
+    <insert id="insertByUsernameUpdate" parameterType="com.xingbingxuan.blog.account.entity.UserEntity" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `user`(username,password,header,social_type,social_uid,create_time,last_login_time)
+        VALUES (#{username},#{password},#{header},#{socialType},#{socialUid},#{createTime},#{lastLoginTime})
+        ON DUPLICATE KEY UPDATE last_login_time = #{lastLoginTime} ,integration = integration + 1
+
+    </insert>
     <update id="updateUserById" parameterType="UserEntity">
         UPDATE `user` set
         <trim prefix=" " suffix=" " suffixOverrides=",">
@@ -116,7 +122,7 @@
             <if test="socialUid != null and socialUid != '' ">
                  social_uid = #{socialUid},
             </if>
-            <if test="createTime != null and createTime != '' ">
+            <if test="createTime != null  ">
                  create_time = #{createTime},
             </if>
             <if test="lastLoginTime != null  ">

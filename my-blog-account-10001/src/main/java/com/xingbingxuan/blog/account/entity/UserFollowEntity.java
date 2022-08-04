@@ -14,6 +14,6 @@ public class UserFollowEntity {
 
     private Integer userId;
 
-    private Integer userFollowId;
+    private Integer followUserId;
 
 }

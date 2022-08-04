@@ -24,9 +24,8 @@ public class UserFollowServiceImpl implements UserFollowService {
     @Override
     public List<Integer> queryUserFollowIdByUserId(Integer userId) {
         List<UserFollowEntity> userFollows = this.userFollowMapper.selectAllByUserId(userId);
-
         List<Integer> list = userFollows.stream()
-                .map(userFollowEntity -> userFollowEntity.getUserFollowId()).collect(Collectors.toList());
+                .map(userFollowEntity -> userFollowEntity.getFollowUserId()).collect(Collectors.toList());
 
         return list;
     }

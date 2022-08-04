@@ -1,0 +1,14 @@
+server:
+  port: 9001
+spring:
+  application:
+    name: my-blog-third-party
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+
+#  jackson:
+#    time-zone: GMT+8
+#    date-format: yyyy-MM-dd HH:mm:ss
+    #date-format: java.text.SimpleDateFormat

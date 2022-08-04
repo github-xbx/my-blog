@@ -1,0 +1,11 @@
+#
+#
+#spring:
+#  gateway:
+#    routes:
+#      - id: test_baidu
+#        uri: https://www.baidu.com
+#        predicates:
+#          - Query=url,baidu
+#server:
+#  port: 81

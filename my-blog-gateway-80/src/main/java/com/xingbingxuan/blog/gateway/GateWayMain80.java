@@ -14,5 +14,7 @@ public class GateWayMain80 {
 
     public static void main(String[] args) {
         SpringApplication.run(GateWayMain80.class,args);
+
+
     }
 }

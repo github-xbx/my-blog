@@ -9,6 +9,6 @@
     </select>
 
     <select id="selectAllByBlogId" resultType="com.xingbingxuan.blog.vo.LabelVo">
-        SELECT * FROM label AS l,blog_label AS bl where l.label_id = bl.label_id AND bl.blog_id = #{param1}
+        SELECT * FROM label AS l,blog_label AS bl where l.label_id = bl.label_id AND bl.blog_id = #{blogId}
     </select>
 </mapper>

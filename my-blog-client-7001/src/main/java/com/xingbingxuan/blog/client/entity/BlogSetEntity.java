@@ -14,11 +14,8 @@ public class BlogSetEntity {
 
     private Integer blogId;
 
-    private Integer indexSetImage;
+    private Integer indexSetting;
 
-    private Integer indexSetList;
-
-    private Integer indexSetRound;
 
 
 }

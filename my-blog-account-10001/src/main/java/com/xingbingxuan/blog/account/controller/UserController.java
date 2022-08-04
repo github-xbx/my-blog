@@ -125,4 +125,22 @@ public class UserController {
 
 
     }
+
+    /**
+     * 功能描述:
+     * <p>第三方服务调用</p>
+     *
+     * @param param
+     * @return : com.xingbingxuan.blog.vo.UserVo
+     * @author : xbx
+     * @date : 2022/7/25 22:28
+     */
+    @PostMapping("thirdLogin")
+    public UserVo loginAndRegister(@RequestBody Map param){
+        UserVo account = this.accountService.isAccount(param);
+        //密码脱敏
+        account.setPassword(null);
+        return account;
+    }
+
 }

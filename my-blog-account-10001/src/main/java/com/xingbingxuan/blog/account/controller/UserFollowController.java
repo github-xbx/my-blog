@@ -34,7 +34,6 @@ public class UserFollowController {
     public Result<List<Integer>> queryUserFollowUserId(@PathVariable("userId") Integer userId){
 
         List<Integer> list = userFollowService.queryUserFollowIdByUserId(userId);
-
         return Result.success(list);
     }
 }

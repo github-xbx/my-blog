@@ -122,4 +122,14 @@ public interface AccountService {
      */
     Boolean  logout(Long userId,String token);
 
+    /**
+     * 功能描述:
+     * <p>根据账户信息判断是否存在给账户如果存在返回，不存在添加在之后返回</p>
+     *
+     * @param param
+     * @return : com.xingbingxuan.blog.vo.UserVo
+     * @author : xbx
+     * @date : 2022/7/24 22:36
+     */
+    UserVo isAccount(Map param);
 }

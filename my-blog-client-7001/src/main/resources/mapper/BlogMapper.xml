@@ -79,7 +79,7 @@
     <!--SELECT b_id,b_title,b_description,b_img,b_insert_time,label.label_name,label.label_id FROM blog,label,blog_label
             WHERE blog.b_tid = blog_label.blog_id AND label.label_id = blog_label.label_id-->
     <select id="selectAllBlogAndLabel" resultMap="BlogVoResultMap">
-        SELECT b_id,b_title,b_description,b_img,b_insert_time,label.label_name,label.label_id
+        SELECT b_id,b_title,b_description,b_i mg,b_insert_time,label.label_name,label.label_id
         FROM
         blog
         LEFT JOIN blog_label ON blog.b_id = blog_label.blog_id
@@ -89,18 +89,34 @@
     <select id="selectCountByWeek" resultType="BlogEntity">
         SELECT b_insert_time FROM `blog` WHERE DATE_SUB(CURDATE(), INTERVAL 7 DAY) &lt;= b_insert_time
     </select>
-    <select id="selectAllByBlogIds" resultType="com.xingbingxuan.blog.vo.BlogVo">
+
+    <resultMap id="blogVoResult" type="com.xingbingxuan.blog.vo.BlogVo">
+        <id column="b_id" property="blogId"/>
+        <result column="b_uid" property="blogUid"/>
+        <result column="b_title" property="blogTitle"/>
+
+        <result column="b_description" property="blogDescription"/>
+        <result column="b_img" property="blogImg"/>
+        <result column="b_state" property="blogState"/>
+        <result column="b_insert_time" property="blogInsertTime"/>
+        <result column="category_id" property="categoryId" />
+        <result column="category_name" property="categoryName"/>
+        <collection property="label" column="{blogId = b_id}" ofType="com.xingbingxuan.blog.vo.LabelVo"
+                    select="com.xingbingxuan.blog.client.mapper.LabelMapper.selectAllByBlogId" javaType="List"/>
+    </resultMap>
+
+
+    <select id="selectAllByBlogIds" resultMap="blogVoResult">
         SELECT
-        b.b_id AS blogId,
-        b.b_uid AS blogUid,
-        b.b_title AS blogTitle,
-        b.b_content AS blogContent,
-        b.b_description AS blogDescription,
-        b.b_img AS blogImg,
-        b.b_state AS blogState,
-        b.b_insert_time AS blogInsertTime,
-        c.category_id AS categoryId,
-        c.category_name AS categoryName
+        b.b_id ,
+        b.b_uid ,
+        b.b_title ,
+        b.b_description,
+        b.b_img ,
+        b.b_state ,
+        b.b_insert_time ,
+        c.category_id ,
+        c.category_name
          FROM `blog` b, `category` c WHERE c.category_id = b.b_Tid AND b.b_id IN
         <foreach collection="list" item="blogId" index="index" open="(" close=")" separator=",">
             #{blogId}

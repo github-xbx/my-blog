@@ -35,6 +35,17 @@ public interface AccountMapper {
 
     Integer insertAccount(UserEntity userEntity);
 
+    /**
+     * 功能描述:
+     * <p>插入一条数据，如果该数据存在怎更新它的登录时间，如果该数据不存在插入一条新数据</p>
+     *
+     * @param user
+     * @return : java.lang.Integer
+     * @author : xbx
+     * @date : 2022/7/25 21:50
+     */
+    Integer insertByUsernameUpdate(UserEntity user);
+
     Integer selectAccountCount();
 
     /**
