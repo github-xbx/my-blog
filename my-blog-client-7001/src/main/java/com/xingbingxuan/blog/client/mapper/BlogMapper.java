@@ -3,7 +3,9 @@ package com.xingbingxuan.blog.client.mapper;
 
 import com.xingbingxuan.blog.client.entity.BlogEntity;
 import com.xingbingxuan.blog.vo.BlogVo;
+import com.xingbingxuan.blog.vo.LabelVo;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -126,7 +128,16 @@ public interface BlogMapper {
      */
     public List<BlogEntity> selectCountByWeek();
 
-
+    /**
+     * 功能描述:
+     * <p>根据博客的id集合产询出博客所有的信息</p>
+     *
+     * @param blogIds
+     * @return : java.util.List<com.xingbingxuan.blog.vo.BlogVo>
+     * @author : xbx
+     * @date : 2022/8/4 23:19
+     */
     public List<BlogVo> selectAllByBlogIds(List<Integer> blogIds);
+
 
 }

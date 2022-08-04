@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author : xbx
@@ -128,11 +129,11 @@ public class BlogController {
      * @date : 2022/6/12 11:40
      */
     @GetMapping("queryBlogByIndexRecommend")
-    public Result<List<BlogVo>> queryBlogByIndexRecommend(){
+    public Result<Map<Integer, List<BlogVo>>> queryBlogByIndexRecommend(){
 
-        List<BlogVo> blogVos = blogService.queryBlogByIndexRecommend();
+        Map<Integer, List<BlogVo>> map = blogService.queryBlogByIndexRecommend();
 
-        return Result.success(blogVos);
+        return Result.success(map);
     }
 
 

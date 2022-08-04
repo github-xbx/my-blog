@@ -7,6 +7,7 @@ import com.xingbingxuan.blog.vo.BlogVo;
 
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author : xbx
@@ -48,7 +49,7 @@ public interface BlogService {
      * @author : xbx
      * @date : 2022/6/16 22:35
      */
-    public List<BlogVo> queryBlogByIndexRecommend();
+    public Map<Integer, List<BlogVo>> queryBlogByIndexRecommend();
 
     /**
      * 功能描述:

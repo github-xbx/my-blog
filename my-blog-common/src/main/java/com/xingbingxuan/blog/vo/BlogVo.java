@@ -41,11 +41,7 @@ public class BlogVo {
     private String userHeader;
 
     /*首页推荐设置字段*/
-    private Integer indexSetImage;
-
-    private Integer indexSetList;
-
-    private Integer indexSetRound;
+    private Integer indexSetting;
 
 
 }

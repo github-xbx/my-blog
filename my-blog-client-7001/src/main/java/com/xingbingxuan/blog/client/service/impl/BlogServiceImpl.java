@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.google.common.collect.Lists;
 import com.xingbingxuan.blog.client.entity.BlogEntity;
 import com.xingbingxuan.blog.client.entity.BlogSetEntity;
 import com.xingbingxuan.blog.client.entity.CategoryEntity;
@@ -18,6 +19,7 @@ import com.xingbingxuan.blog.utils.DateTool;
 import com.xingbingxuan.blog.utils.TokenUtil;
 import com.xingbingxuan.blog.vo.BlogVo;
 import com.xingbingxuan.blog.vo.LabelVo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,6 +36,7 @@ import java.util.stream.Collectors;
  * @date : 2022/4/4 11:25
  */
 @Service
+@Slf4j
 public class BlogServiceImpl implements BlogService {
 
     @Autowired
@@ -142,31 +145,69 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    public List<BlogVo> queryBlogByIndexRecommend() {
+    public Map<Integer, List<BlogVo>> queryBlogByIndexRecommend() {
 
         //查询推荐的博客
         List<BlogSetEntity> blogSets = blogSetMapper.selectAll();
-        Map<Integer, BlogSetEntity> setEntityMap = blogSets.stream().collect(Collectors.toMap(BlogSetEntity::getBlogId, Function.identity()));
+
+        List<Integer> settings = blogSets.stream().map(BlogSetEntity::getIndexSetting).collect(Collectors.toList());
 
         List<Integer> blogIds = blogSets.stream().map(blogSetEntity -> blogSetEntity.getBlogId()).collect(Collectors.toList());
         //获取博客信息
         List<BlogVo> blogVos = blogMapper.selectAllByBlogIds(blogIds);
 
-        System.out.println(blogVos);
+
+
+
         //根据博客信息获取用户头像
         Map<Integer, Integer> map = blogVos.stream().collect(Collectors.toMap(BlogVo::getBlogId, BlogVo::getBlogUid));
 
+        log.info("account服务传的参数"+map);
         Map header = userFeignService.queryUserHeaderByIds(map);
 
-        //组装BlogVo返回
-        blogVos.stream().forEach(blogVo -> {
-            BeanUtils.copyProperties(setEntityMap.get(blogVo.getBlogId()),blogVo);
-            blogVo.setUserHeader((String) header.get(blogVo.getBlogId().toString()));
-            List<LabelVo> labels = labelMapper.selectAllByBlogId(blogVo.getBlogId());
-            blogVo.setLabel(labels);
+
+
+        Map<Integer, List<Integer>> setBlogIdMap = blogSets.stream().collect(Collectors.toMap(
+                BlogSetEntity::getIndexSetting,
+                t -> Lists.newArrayList(t.getBlogId()),
+                (List<Integer> oldList, List<Integer> newList) -> {
+                    oldList.addAll(newList);
+                    return oldList;
+                })
+        );
+
+        Map<Integer, List<BlogVo>> result = new HashMap<>();
+
+        settings.forEach(setting ->{
+            List<Integer> list = setBlogIdMap.get(setting);
+            List<BlogVo> vos = new ArrayList<>();
+            blogVos.stream().forEach(blogVo -> {
+                if (list.contains(blogVo.getBlogId())){
+                    blogVo.setIndexSetting(setting);
+                    blogVo.setUserHeader((String) header.get(blogVo.getBlogId().toString()));
+
+
+                    vos.add(blogVo);
+                }
+            });
+            result.put(setting,vos);
         });
 
-        return blogVos;
+
+        //Map<Integer, BlogSetEntity> setEntityMap = blogSets.stream().collect(Collectors.toMap(BlogSetEntity::getBlogId, Function.identity()));
+
+
+
+
+//        //组装BlogVo返回
+//        blogVos.stream().forEach(blogVo -> {
+//            BeanUtils.copyProperties(setEntityMap.get(blogVo.getBlogId()),blogVo);
+//            blogVo.setUserHeader((String) header.get(blogVo.getBlogId().toString()));
+//            List<LabelVo> labels = labelMapper.selectAllByBlogId(blogVo.getBlogId());
+//            blogVo.setLabel(labels);
+//        });
+
+        return result;
     }
 
     @Override

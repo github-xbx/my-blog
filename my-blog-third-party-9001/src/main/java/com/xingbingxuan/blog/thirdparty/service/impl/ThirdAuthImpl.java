@@ -72,7 +72,7 @@ public class ThirdAuthImpl implements ThirdAuth {
         if (login.ok()) {
             JSONObject giteeResultJson = JSONUtil.parseObj(login.getData());
 
-            log.info("返回的信息 -> {}", giteeResultJson);
+            //log.info("返回的信息 -> {}", giteeResultJson);
             Map<Object, Object> param = new HashMap<>();
 
             param.put("header", giteeResultJson.get("avatar"));

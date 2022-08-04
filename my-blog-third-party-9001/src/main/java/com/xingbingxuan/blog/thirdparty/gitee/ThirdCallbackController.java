@@ -49,7 +49,7 @@ public class ThirdCallbackController {
 
                 if ("success".equals(login.get("login"))){
                     modelAndView.setViewName("login");
-                    System.out.println(login.get("userInfo"));
+                    //System.out.println(login.get("userInfo"));
                     modelAndView.addObject("userInfo",login.get("userInfo"));
                     modelAndView.addObject("domain",PublicConfigUtil.BLOG_HOME_DOMAIN);
                 }else {
