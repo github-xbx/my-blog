@@ -61,6 +61,6 @@ public interface BlogService {
      * @author : xbx
      * @date : 2022/6/21 22:45
      */
-    public PageInfo<BlogVo> queryBlogByUserFollow(int pageNum, int pageSize);
+    public PageInfo<BlogVo> queryBlogByUserFollow(int pageNum, int pageSize,String token);
 
 }

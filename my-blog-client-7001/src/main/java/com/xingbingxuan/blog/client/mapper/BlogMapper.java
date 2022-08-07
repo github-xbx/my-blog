@@ -1,6 +1,7 @@
 package com.xingbingxuan.blog.client.mapper;
 
 
+import com.github.pagehelper.PageInfo;
 import com.xingbingxuan.blog.client.entity.BlogEntity;
 import com.xingbingxuan.blog.vo.BlogVo;
 import com.xingbingxuan.blog.vo.LabelVo;
@@ -140,4 +141,14 @@ public interface BlogMapper {
     public List<BlogVo> selectAllByBlogIds(List<Integer> blogIds);
 
 
+    /**
+     * 功能描述:
+     * <p>根据用户的id分页查询出用户的所有博客信息</p>
+     *
+     * @param userIds
+     * @return : java.util.List<com.xingbingxuan.blog.vo.BlogVo>
+     * @author : xbx
+     * @date : 2022/8/6 17:20
+     */
+    public List<BlogVo> selectAllByUserIds(List<Integer> userIds);
 }

@@ -6,10 +6,7 @@ import com.xingbingxuan.blog.utils.Result;
 import com.xingbingxuan.blog.vo.BlogVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * 需要登录权限的blogController
@@ -53,8 +50,11 @@ public class AuthBlogController {
      * @author : xbx
      * @date : 2022/6/21 22:43
      */
-    public Result<PageInfo<BlogVo>> queryBlogByUserFollow(){
+    @GetMapping("blogUserFollow")
+    public Result<PageInfo<BlogVo>> queryBlogByUserFollow(@RequestHeader("Authorization") String token,Integer pageNum){
 
-        return null;
+        PageInfo<BlogVo> blogVoPageInfo = blogService.queryBlogByUserFollow(pageNum, 10, token);
+
+        return Result.success(blogVoPageInfo);
     }
 }

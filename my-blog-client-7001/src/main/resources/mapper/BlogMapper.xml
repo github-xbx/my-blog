@@ -58,7 +58,7 @@
         <result column="b_insert_time" property="blogInsertTime"/>
         <result column="series_id" property="categoryId"/>
         <result column="series_name" property="categoryName"/>
-        <collection property="label" ofType="LabelEntity">
+        <collection property="label" ofType="com.xingbingxuan.blog.vo.LabelVo">
             <result column="label_id" property="labelId"/>
             <result column="label_name" property="labelName"/>
         </collection>
@@ -121,6 +121,23 @@
         <foreach collection="list" item="blogId" index="index" open="(" close=")" separator=",">
             #{blogId}
         </foreach>
+    </select>
+    <select id="selectAllByUserIds" resultMap="blogVoResult">
+        SELECT
+        b.b_id ,
+        b.b_uid ,
+        b.b_title ,
+        b.b_description,
+        b.b_img ,
+        b.b_state ,
+        b.b_insert_time ,
+        c.category_id ,
+        c.category_name
+        FROM `blog` b, `category` c WHERE c.category_id = b.b_Tid AND b.b_uid IN
+        <foreach collection="list" item="userId" index="index" open="(" close=")" separator=",">
+            #{userId}
+        </foreach>
+
     </select>
 
 

@@ -23,7 +23,7 @@ public class UserFollowController {
 
     /**
      * 功能描述:
-     * <p>根据用户id获取改用关注的用户id</p>
+     * <p>根据用户id获取该用户关注的用户id</p>
      *
      * @param userId
      * @return : com.xingbingxuan.blog.utils.Result<java.util.List<java.lang.Integer>>

@@ -16,6 +16,7 @@ import com.xingbingxuan.blog.client.mapper.CategoryMapper;
 import com.xingbingxuan.blog.client.mapper.LabelMapper;
 import com.xingbingxuan.blog.client.service.BlogService;
 import com.xingbingxuan.blog.utils.DateTool;
+import com.xingbingxuan.blog.utils.Result;
 import com.xingbingxuan.blog.utils.TokenUtil;
 import com.xingbingxuan.blog.vo.BlogVo;
 import com.xingbingxuan.blog.vo.LabelVo;
@@ -24,10 +25,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -211,16 +209,26 @@ public class BlogServiceImpl implements BlogService {
     }
 
     @Override
-    public PageInfo<BlogVo> queryBlogByUserFollow(int pageNum, int pageSize) {
+    public PageInfo<BlogVo> queryBlogByUserFollow(int pageNum, int pageSize,String token) {
 
-        //判断session是否登录，或者登录是否过期
+        PageHelper.startPage(pageNum,pageSize);
+
+        //解析token
+        String userId = TokenUtil.getObjectByToken(Base64.getDecoder().decode(token));
 
         //获取关注的用户id
+        Result<List<Integer>> userFollow = userFeignService.queryUserFollowUserId(Integer.valueOf(userId));
+        List<Integer> userIds;
+        if (userFollow.getCode().equals(200) ){
+            userIds = userFollow.getObject();
+        }else {
+            return new PageInfo<>();
+        }
 
         //根据关注的用户id 查询博客并根据时间排序
+        List<BlogVo> blogVos = blogMapper.selectAllByUserIds(userIds);
 
 
-
-        return null;
+        return new PageInfo<>(blogVos);
     }
 }
