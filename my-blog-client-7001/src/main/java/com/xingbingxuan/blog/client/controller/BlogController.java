@@ -136,6 +136,40 @@ public class BlogController {
         return Result.success(map);
     }
 
+    /**
+     * 功能描述:
+     * <p>首页标签切换方法</p>
+     *
+     * @param tabId
+     * @return : com.xingbingxuan.blog.utils.Result<com.github.pagehelper.PageInfo<com.xingbingxuan.blog.vo.BlogVo>>
+     * @author : xbx
+     * @date : 2022/8/14 19:33
+     */
+    @GetMapping("queryByTabId/{tabId}/{pageNo}")
+    public Result<PageInfo<BlogVo>> queryByTabId(@PathVariable Integer tabId,@PathVariable Integer pageNo){
 
+        PageInfo<BlogVo> result = null;
+
+        switch (tabId){
+            case 1:
+                //推荐
+                result = this.blogService.queryIndexBlogList(pageNo);
+                break;
+            case 2:
+                //最新
+                result = this.blogService.queryIndexNew(pageNo);
+                break;
+            case 3:
+                //最热
+                result = this.blogService.queryIndexHot(pageNo);
+                break;
+            default:
+                //都没有
+                return Result.error(500,"没有选项编号");
+
+        }
+
+        return Result.success(result);
+    }
 
 }

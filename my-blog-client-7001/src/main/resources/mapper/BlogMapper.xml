@@ -108,35 +108,61 @@
 
     <select id="selectAllByBlogIds" resultMap="blogVoResult">
         SELECT
-        b.b_id ,
-        b.b_uid ,
-        b.b_title ,
-        b.b_description,
-        b.b_img ,
-        b.b_state ,
-        b.b_insert_time ,
-        c.category_id ,
-        c.category_name
-         FROM `blog` b, `category` c WHERE c.category_id = b.b_Tid AND b.b_id IN
+            b.b_id ,
+            b.b_uid ,
+            b.b_title ,
+            b.b_description,
+            b.b_img ,
+            b.b_state ,
+            b.b_insert_time ,
+            c.category_id ,
+            c.category_name
+        FROM
+            `blog` b, `category` c
+        WHERE
+            c.category_id = b.b_Tid AND b.b_id IN
         <foreach collection="list" item="blogId" index="index" open="(" close=")" separator=",">
             #{blogId}
         </foreach>
     </select>
     <select id="selectAllByUserIds" resultMap="blogVoResult">
         SELECT
-        b.b_id ,
-        b.b_uid ,
-        b.b_title ,
-        b.b_description,
-        b.b_img ,
-        b.b_state ,
-        b.b_insert_time ,
-        c.category_id ,
-        c.category_name
-        FROM `blog` b, `category` c WHERE c.category_id = b.b_Tid AND b.b_uid IN
+            b.b_id ,
+            b.b_uid ,
+            b.b_title ,
+            b.b_description,
+            b.b_img ,
+            b.b_state ,
+            b.b_insert_time ,
+            c.category_id ,
+            c.category_name
+        FROM
+            `blog` b, `category` c
+        WHERE
+            c.category_id = b.b_Tid AND b.b_uid IN
         <foreach collection="list" item="userId" index="index" open="(" close=")" separator=",">
             #{userId}
         </foreach>
+
+    </select>
+    <select id="selectAllOrderByTime" resultMap="blogVoResult">
+        SELECT
+	        b.b_id,
+            b.b_uid,
+            b.b_title,
+            b.b_description,
+            b.b_img,
+            b.b_state,
+            b.b_insert_time,
+            c.category_id,
+            c.category_name
+        FROM
+            `blog` AS b,
+            `category` AS c
+        WHERE
+            c.category_id = b.b_id
+        ORDER BY
+            b_insert_time DESC
 
     </select>
 

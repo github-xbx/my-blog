@@ -151,4 +151,15 @@ public interface BlogMapper {
      * @date : 2022/8/6 17:20
      */
     public List<BlogVo> selectAllByUserIds(List<Integer> userIds);
+
+    /**
+     * 功能描述:
+     * <p>获取所有博客信息（包括关联的标签、类型等信息）根据时间排序</p>
+     *
+     * @return : java.util.List<com.xingbingxuan.blog.vo.BlogVo>
+     * @author : xbx
+     * @date : 2022/8/14 21:50
+     */
+    public List<BlogVo> selectAllOrderByTime();
+
 }

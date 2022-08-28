@@ -11,6 +11,6 @@
         SELECT blog_id FROM blog_set
     </select>
     <select id="selectAllBySetting" resultType="com.xingbingxuan.blog.client.entity.BlogSetEntity">
-        SELECT * FROM blog_set WHERE blog_setting=#{param1}
+        SELECT * FROM blog_set WHERE index_setting=#{param1}
     </select>
 </mapper>

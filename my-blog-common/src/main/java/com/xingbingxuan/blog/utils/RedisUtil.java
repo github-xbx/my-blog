@@ -58,6 +58,20 @@ public class RedisUtil {
         }
     }
 
+    /**
+     * 功能描述:
+     * <p>获取所有的key-value</p>
+     *
+     * @param key
+     * @return : java.util.Set<java.lang.String>
+     * @author : xbx
+     * @date : 2022/8/21 10:05
+     */
+    public static Set<String> keys(String key){
+        Set<String> keys = getJedis().keys(key);
+
+        return keys;
+    }
 
     /**
      * 普通缓存获取

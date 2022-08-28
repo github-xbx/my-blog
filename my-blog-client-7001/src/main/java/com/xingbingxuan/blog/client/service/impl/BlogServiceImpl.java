@@ -15,7 +15,9 @@ import com.xingbingxuan.blog.client.mapper.BlogSetMapper;
 import com.xingbingxuan.blog.client.mapper.CategoryMapper;
 import com.xingbingxuan.blog.client.mapper.LabelMapper;
 import com.xingbingxuan.blog.client.service.BlogService;
+import com.xingbingxuan.blog.database.RedisEntity;
 import com.xingbingxuan.blog.utils.DateTool;
+import com.xingbingxuan.blog.utils.RedisUtil;
 import com.xingbingxuan.blog.utils.Result;
 import com.xingbingxuan.blog.utils.TokenUtil;
 import com.xingbingxuan.blog.vo.BlogVo;
@@ -24,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 import java.util.function.Function;
@@ -36,6 +39,11 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class BlogServiceImpl implements BlogService {
+
+
+    private static final String BLOG_READ_COUNT_PREFIX = "blog:readCount:";
+    private static final String BLOG_READ_COUNT_REDIS_KEY = BLOG_READ_COUNT_PREFIX+"*";
+    private static final Integer PAGE_SIZE = 10;
 
     @Autowired
     private BlogMapper blogMapper;
@@ -230,5 +238,121 @@ public class BlogServiceImpl implements BlogService {
 
 
         return new PageInfo<>(blogVos);
+    }
+
+    @Override
+    public PageInfo<BlogVo> queryIndexBlogList(Integer pageNo) {
+
+        PageHelper.startPage(pageNo,PAGE_SIZE);
+
+        List<BlogSetEntity> blogSet = blogSetMapper.selectAllBySetting(3);
+
+        List<Integer> blogIds = blogSet.stream().map(BlogSetEntity::getBlogId).collect(Collectors.toList());
+
+        List<BlogVo> blogVos = blogMapper.selectAllByBlogIds(blogIds);
+
+        //获取博客用户的头像信息
+        blogVos = this.getUserHeader(blogVos);
+        //获取博客阅读的次数
+        this.blogReadCount(blogVos);
+
+
+        PageInfo<BlogVo> result = new PageInfo<>(blogVos);
+
+        return result;
+    }
+
+    @Override
+    public PageInfo<BlogVo> queryIndexNew(Integer pageNo) {
+
+        PageHelper.startPage(pageNo,PAGE_SIZE);
+
+        List<BlogVo> blogVos = blogMapper.selectAllOrderByTime();
+
+        //获取博客用户的头像信息
+        blogVos = this.getUserHeader(blogVos);
+        //获取博客阅读的次数
+        this.blogReadCount(blogVos);
+
+        return new PageInfo<>(blogVos);
+    }
+
+    @Override
+    public PageInfo<BlogVo> queryIndexHot(Integer pageNo) {
+
+        PageHelper.startPage(pageNo,PAGE_SIZE);
+
+        //获取所有的keys
+        Set<String> keys = RedisUtil.keys(BLOG_READ_COUNT_REDIS_KEY);
+
+
+        //根据redis的key 获取blogId
+        List<Integer> blogIds = keys.stream().map(a -> a.substring(a.indexOf(":", a.indexOf(":") + 1) + 1)).map(Integer::valueOf).collect(Collectors.toList());
+
+
+        //获取blog信息
+        List<BlogVo> blogVos = blogMapper.selectAllByBlogIds(blogIds);
+        //获取博客用户的头像信息
+        blogVos = this.getUserHeader(blogVos);
+        //获取博客阅读的次数
+        this.blogReadCount(blogVos);
+
+        //blogVos 根据readCount排序
+        blogVos.sort((a,b) ->{
+            return b.getReadCount() - a.getReadCount();
+        });
+
+
+        return new PageInfo<>(blogVos);
+    }
+
+
+
+    /**
+     * 功能描述:
+     * <p>blog user header image </p>
+     *
+     * @param blogVos
+     * @return : java.util.List<com.xingbingxuan.blog.vo.BlogVo>
+     * @author : xbx
+     * @date : 2022/8/28 17:00
+     */
+    private List<BlogVo> getUserHeader(List<BlogVo> blogVos){
+        //根据博客信息获取用户头像
+        Map<Integer, Integer> map = blogVos.stream().collect(Collectors.toMap(BlogVo::getBlogId, BlogVo::getBlogUid));
+
+        log.info("account服务传的参数"+map);
+        Map header = userFeignService.queryUserHeaderByIds(map);
+        //log.info("调试日志->"+header);
+        for (BlogVo blogVo : blogVos) {
+            //log.info("调试日志->"+blogVo.getBlogUid().toString());
+
+            blogVo.setUserHeader(String.valueOf(header.get(blogVo.getBlogId().toString())));
+            //log.info("调试日志->"+header.get(blogVo.getBlogId().toString()));
+        }
+        return blogVos;
+
+    }
+
+    /**
+     * 功能描述:
+     * <p>blog 阅读次数</p>
+     *
+     * @param blogVos
+     * @return : void
+     * @author : xbx
+     * @date : 2022/8/28 18:39
+     */
+    private void blogReadCount(List<BlogVo> blogVos){
+
+        blogVos.forEach(a -> {
+            Integer blogId = a.getBlogId();
+            Object value = RedisUtil.get(BLOG_READ_COUNT_PREFIX + blogId.toString());
+
+            Integer blogReadCount = value == null ? 0 :Integer.parseInt(value.toString());
+
+            a.setReadCount(blogReadCount == null ? 0 : blogReadCount );
+        });
+
     }
 }

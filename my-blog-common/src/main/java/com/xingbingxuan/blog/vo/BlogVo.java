@@ -43,5 +43,6 @@ public class BlogVo {
     /*首页推荐设置字段*/
     private Integer indexSetting;
 
-
+    /*阅读次数*/
+    private Integer readCount;
 }

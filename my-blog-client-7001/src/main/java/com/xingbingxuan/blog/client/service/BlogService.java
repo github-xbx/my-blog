@@ -2,7 +2,6 @@ package com.xingbingxuan.blog.client.service;
 
 import com.github.pagehelper.PageInfo;
 import com.xingbingxuan.blog.client.entity.BlogEntity;
-import com.xingbingxuan.blog.database.Page;
 import com.xingbingxuan.blog.vo.BlogVo;
 
 
@@ -63,4 +62,32 @@ public interface BlogService {
      */
     public PageInfo<BlogVo> queryBlogByUserFollow(int pageNum, int pageSize,String token);
 
+    /**
+     * 功能描述:
+     * <p>获取首页推荐的博客信息（分页）</p>
+     *
+     * @return : com.github.pagehelper.PageInfo<com.xingbingxuan.blog.client.entity.vo.BlogVo>
+     * @author : xbx
+     * @date : 2022/8/14 21:35
+     */
+    public PageInfo<BlogVo> queryIndexBlogList(Integer pageNo);
+
+    /**
+     * 功能描述:
+     * <p>获取最新的博客信息（）分页</p>
+     *
+     * @return : com.github.pagehelper.PageInfo<com.xingbingxuan.blog.client.entity.vo.BlogVo>
+     * @author : xbx
+     * @date : 2022/8/14 21:36
+     */
+    public PageInfo<BlogVo> queryIndexNew(Integer pageNo);
+    /**
+     * 功能描述:
+     * <p>获取最热（根据热度（点赞）最高）博客信息（分页）</p>
+     *
+     * @return : com.github.pagehelper.PageInfo<com.xingbingxuan.blog.client.entity.vo.BlogVo>
+     * @author : xbx
+     * @date : 2022/8/14 21:38
+     */
+    public PageInfo<BlogVo> queryIndexHot(Integer pageNo);
 }

@@ -19,6 +19,15 @@ import java.util.Map;
 @FeignClient("my-blog-account")
 public interface BlogUserFeignService {
 
+    /**
+     * 功能描述:
+     * <p>获取博客用户的信息 k => blogId ,v => userInfo</p>
+     *
+     * @param blogIdAndUserId
+     * @return : java.util.Map
+     * @author : xbx
+     * @date : 2022/8/28 16:50
+     */
     @PostMapping("user/queryUserHeaderByIds")
     public Map queryUserHeaderByIds(Map blogIdAndUserId);
 

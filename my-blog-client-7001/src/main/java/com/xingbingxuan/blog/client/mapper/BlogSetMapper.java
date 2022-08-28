@@ -1,6 +1,8 @@
 package com.xingbingxuan.blog.client.mapper;
 
+import com.github.pagehelper.PageInfo;
 import com.xingbingxuan.blog.client.entity.BlogSetEntity;
+import com.xingbingxuan.blog.client.entity.vo.BlogVo;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -43,5 +45,6 @@ public interface BlogSetMapper {
      * @date : 2022/8/2 23:18
      */
     public List<BlogSetEntity> selectAllBySetting(Integer setting);
+
 
 }
