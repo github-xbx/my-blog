@@ -1,18 +1,41 @@
 package com.xingbingxuan.blog.auth.config;
 
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.client.RestTemplate;
 
 /**
  * @author : xbx
- * @date : 2022/3/27 17:41
+ * @date : 2022/8/31 22:14
  */
 @Configuration
-public class RedisConfig {
+public class AuthServerBeanConfig {
 
+    /**
+     * restTemplate bean构造
+     **/
+    @Bean
+    public RestTemplate restTemplate(RestTemplateBuilder builder){
+        return builder.build();
+    }
+
+    /**
+     * spring security 密码编码器
+     **/
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    /**
+     * redisTemplate 配置bean
+     **/
     @Bean
     public RedisTemplate<String,Object> redisTemplate(RedisConnectionFactory factory){
 

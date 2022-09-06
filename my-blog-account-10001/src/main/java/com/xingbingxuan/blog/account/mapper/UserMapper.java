@@ -1,6 +1,7 @@
 package com.xingbingxuan.blog.account.mapper;
 
 import com.xingbingxuan.blog.account.entity.UserEntity;
+import com.xingbingxuan.blog.account.entity.bo.UserAndRoleBo;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.List;
  * @date : 2022/3/26 21:48
  */
 @Mapper
-public interface AccountMapper {
+public interface UserMapper {
     /**
      * 功能描述:
      * <p>根据条件查询一个</p>
@@ -21,7 +22,7 @@ public interface AccountMapper {
      * @author : xbx
      * @date : 2022/3/26 21:50
      */
-    UserEntity selectOneAnd(UserEntity userEntity);
+    UserAndRoleBo selectOneAnd(UserEntity userEntity);
 
     /**
      * 功能描述:
@@ -78,7 +79,7 @@ public interface AccountMapper {
      * @author : xbx
      * @date : 2022/6/26 9:39
      */
-    UserEntity selectPasswordByUserName(String username);
+    UserAndRoleBo selectPasswordByUserName(String username);
 
     /**
      * 功能描述:

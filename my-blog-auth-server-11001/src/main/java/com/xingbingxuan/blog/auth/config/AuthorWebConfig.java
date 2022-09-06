@@ -11,16 +11,5 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class AuthorWebConfig implements WebMvcConfigurer {
 
-//    /**
-//     * 视图映射
-//     *
-//     * @author xbx
-//     * @version 1.0
-//     * @date 2022/3/24 22:02
-//     */
-//    @Override
-//    public void addViewControllers(ViewControllerRegistry registry) {
-//        //只是get请求映射
-//        registry.addViewController("/Login.html").setViewName("Login");
-//    }
+
 }

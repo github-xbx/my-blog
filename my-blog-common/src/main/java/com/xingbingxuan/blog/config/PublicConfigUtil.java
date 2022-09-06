@@ -1,4 +1,6 @@
-package com.xingbingxuan.blog.utils;
+package com.xingbingxuan.blog.config;
+
+import com.xingbingxuan.blog.utils.CommonTool;
 
 import java.io.IOException;
 import java.util.Properties;
@@ -31,13 +33,20 @@ public class PublicConfigUtil {
       blog主页的域名
      */
     public static String BLOG_HOME_DOMAIN;
-
+    /**
+     * 用户默认密码
+     */
+    public static String USER_DEFAULT_PASSWORD;
+    /**
+     * 用户默认头衔url
+     */
+    public static String USER_DEFAULT_HEADER_IMAGE_URL;
 
     private static Properties properties;
 
     static {
         try {
-            properties = CommonTool.getPropertiesContent("publicConfig.properties");
+            properties = CommonTool.getPropertiesContent("PublicConfigInfo.properties");
             CLIENTID = properties.getProperty("oauth.blog.clientId");
             CLIENTSECRET = properties.getProperty("oauth.blog.clientSecret");
             REDIRECTURI = properties.getProperty("oauth.blog.redirectUri");
@@ -48,20 +57,12 @@ public class PublicConfigUtil {
             GITEE_REDIRECTURI = properties.getProperty("gitee.redirectUri");
             GITEE_OAUTHTOKENURI = properties.getProperty("gitee.giteeOauthTokenUrl");
             BLOG_HOME_DOMAIN = properties.getProperty("blog.home.domain");
+            USER_DEFAULT_PASSWORD = properties.getProperty("user.default.password");
+            USER_DEFAULT_HEADER_IMAGE_URL = properties.getProperty("user.default.headerImageUrl");
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-//    public static String getClientId(){
-//        return CLIENTID;
-//    }
-//
-//    public static String getClientSecret(){
-//        return CLIENTSECRET;
-//    }
-//
-//    public static String getRedirectUri(){
-//        return REDIRECTURI;
-//    }
+
 }

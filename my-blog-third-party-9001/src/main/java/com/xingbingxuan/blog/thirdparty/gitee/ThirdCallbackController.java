@@ -1,18 +1,14 @@
 package com.xingbingxuan.blog.thirdparty.gitee;
 
-import cn.hutool.json.JSONObject;
-import cn.hutool.json.JSONUtil;
+import com.xingbingxuan.blog.config.PublicConfigUtil;
 import com.xingbingxuan.blog.thirdparty.service.ThirdAuth;
-import com.xingbingxuan.blog.utils.*;
 import me.zhyd.oauth.model.AuthCallback;
-import me.zhyd.oauth.model.AuthResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.Base64;
 import java.util.Map;
 
 /**
@@ -51,7 +47,7 @@ public class ThirdCallbackController {
                     modelAndView.setViewName("login");
                     //System.out.println(login.get("userInfo"));
                     modelAndView.addObject("userInfo",login.get("userInfo"));
-                    modelAndView.addObject("domain",PublicConfigUtil.BLOG_HOME_DOMAIN);
+                    modelAndView.addObject("domain", PublicConfigUtil.BLOG_HOME_DOMAIN);
                 }else {
                     modelAndView.setViewName("error");
                     modelAndView.addObject("message","登录错误");

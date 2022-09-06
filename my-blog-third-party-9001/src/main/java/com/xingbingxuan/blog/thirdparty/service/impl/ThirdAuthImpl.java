@@ -2,6 +2,7 @@ package com.xingbingxuan.blog.thirdparty.service.impl;
 
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import com.xingbingxuan.blog.config.PublicConfigUtil;
 import com.xingbingxuan.blog.thirdparty.feign.AccountServiceFeign;
 import com.xingbingxuan.blog.thirdparty.service.ThirdAuth;
 import com.xingbingxuan.blog.utils.*;

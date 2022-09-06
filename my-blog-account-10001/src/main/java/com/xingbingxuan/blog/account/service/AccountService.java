@@ -2,6 +2,9 @@ package com.xingbingxuan.blog.account.service;
 
 import com.github.pagehelper.PageInfo;
 import com.xingbingxuan.blog.account.entity.UserEntity;
+import com.xingbingxuan.blog.account.entity.bo.UserAndRoleBo;
+import com.xingbingxuan.blog.dto.UserAllInfoDto;
+import com.xingbingxuan.blog.param.UserParam;
 import com.xingbingxuan.blog.vo.UserVo;
 
 import java.util.List;
@@ -35,6 +38,16 @@ public interface AccountService {
      * @date : 2022/3/25 20:13
      */
     UserEntity selectOneByUsernameAndSocialUid(UserEntity userEntity);
+    /**
+     * 功能描述:
+     * <p>根据第三方应用的type和uid查询用户信息，如果不存在该第三方关联的用户，则新增一个</p>
+     *
+     * @param userParam
+     * @return : com.xingbingxuan.blog.account.entity.UserEntity
+     * @author : xbx
+     * @date : 2022/9/5 22:05
+     */
+    UserAndRoleBo selectOrSaveUserBySocialUidAndSocialType(UserParam userParam);
 
     /**
      * 功能描述:
@@ -46,18 +59,8 @@ public interface AccountService {
      * @author : xbx
      * @date : 2022/3/25 20:33
      */
-    Integer addAccount(UserEntity userEntity);
-    /**
-     * 功能描述:
-     * <p>第三方 gitee 登录</p>
-     *
-     * @param token 第三方登录的token
-     * @return : com.xingbingxuan.blog.account.entity.UserEntity
-     *
-     * @author : xbx
-     * @date : 2022/3/27 10:20
-     */
-    UserEntity giteeLogin(String token);
+    UserAndRoleBo addDefaultUser(UserEntity userEntity);
+
 
     /**
      * 功能描述:
@@ -91,14 +94,14 @@ public interface AccountService {
 
     /**
      * 功能描述:
-     * <p>根据用户查询用户民和密码，用户oauth的登录</p>
+     * <p>根据用户查询用户名和密码，用户oauth的登录 用于服务之间传递</p>
      *
      * @param userName
      * @return : com.xingbingxuan.blog.vo.UserVo
      * @author : xbx
      * @date : 2022/6/25 10:33
      */
-    UserVo queryUserPasswordByUsername(String userName);
+    UserAllInfoDto queryUserPasswordByUsername(String userName);
 
     /**
      * 功能描述:

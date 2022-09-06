@@ -1,8 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.xingbingxuan.blog.account.mapper.AccountMapper">
-    <insert id="insertAccount" parameterType="UserEntity" useGeneratedKeys="true" keyProperty="id">
+<mapper namespace="com.xingbingxuan.blog.account.mapper.UserMapper">
+
+    <resultMap id="UserResultMap" type="com.xingbingxuan.blog.account.entity.bo.UserAndRoleBo">
+        <id column="id" property="id" javaType="Long"/>
+        <result column="username" property="username" javaType="String"/>
+        <result column="password" property="password" javaType="String"/>
+        <result column="nickname" property="nickname" javaType="String"/>
+        <result column="mobile" property="mobile" javaType="String"/>
+        <result column="email" property="email" javaType="String"/>
+        <result column="header" property="header" javaType="String"/>
+        <result column="sex" property="sex" javaType="Integer"/>
+        <result column="sign" property="sign" javaType="String"/>
+        <result column="integration" property="integration" javaType="Integer"/>
+        <result column="growth" property="growth" javaType="Integer"/>
+        <result column="status" property="status" javaType="Integer"/>
+        <result column="social_type" property="socialType" javaType="String"/>
+        <result column="social_uid" property="socialUid" javaType="String"/>
+        <result column="create_time" property="createTime" javaType="Date"/>
+        <result column="last_login_time" property="lastLoginTime" javaType="Date"/>
+        <collection property="roleVos" column="{userId = id}" ofType="com.xingbingxuan.blog.vo.RoleVo"
+                    select="com.xingbingxuan.blog.account.mapper.RoleMapper.selectAllRoleByUserId" javaType="List"/>
+
+    </resultMap>
+
+
+    <insert id="insertAccount" parameterType="com.xingbingxuan.blog.account.entity.UserEntity"
+            useGeneratedKeys="true" keyProperty="id">
         insert into user
         <trim prefix="(" suffix=")" suffixOverrides=",">
             username,
@@ -80,7 +105,7 @@
         ON DUPLICATE KEY UPDATE last_login_time = #{lastLoginTime} ,integration = integration + 1
 
     </insert>
-    <update id="updateUserById" parameterType="UserEntity">
+    <update id="updateUserById" parameterType="com.xingbingxuan.blog.account.entity.UserEntity">
         UPDATE `user` set
         <trim prefix=" " suffix=" " suffixOverrides=",">
             <if test="username != null and username != ''">
@@ -132,10 +157,11 @@
         WHERE id = #{id}
     </update>
 
-    <select id="selectOneAnd" parameterType="UserEntity" resultType="UserEntity">
+    <select id="selectOneAnd" parameterType="com.xingbingxuan.blog.account.entity.UserEntity"
+            resultMap="UserResultMap">
         select id,username,nickname,mobile,email,header,sex,sign,integration,growth,status,social_type,social_uid,create_time,last_login_time
         from  user
-        WHERE 1=1
+        WHERE 1=1 and status = 1
         <if test="id != null and id != '' ">
             and id = #{id}
         </if>
@@ -181,13 +207,14 @@
         <if test="createTime != null and createTime != '' ">
             and create_time = #{createTime}
         </if>
+
     </select>
 
     <select id="selectAccountCount" resultType="java.lang.Integer">
         SELECT COUNT(*) FROM  `user`
     </select>
 
-    <select id="selectByThisWeek" resultType="UserEntity">
+    <select id="selectByThisWeek" resultType="com.xingbingxuan.blog.account.entity.UserEntity">
         SELECT create_time FROM `user` WHERE DATE_SUB(CURDATE(), INTERVAL 7 DAY) &lt;= create_time
     </select>
 
@@ -203,8 +230,11 @@
         </foreach>
 
     </select>
-    <select id="selectPasswordByUserName" resultType="com.xingbingxuan.blog.account.entity.UserEntity">
-        SELECT username,password FROM `user` WHERE username = #{param1}
+
+
+
+    <select id="selectPasswordByUserName" resultMap="UserResultMap">
+        SELECT id, username,password FROM `user` WHERE username = #{param1} AND status = 1
     </select>
 
 </mapper>

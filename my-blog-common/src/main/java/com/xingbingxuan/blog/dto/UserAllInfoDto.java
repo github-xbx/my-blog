@@ -1,16 +1,18 @@
-package com.xingbingxuan.blog.vo;
+package com.xingbingxuan.blog.dto;
 
+import com.xingbingxuan.blog.vo.RoleVo;
 import lombok.Data;
 
 import java.util.Date;
 import java.util.List;
 
 /**
+ * 服务数据传输对象 用户的所有信息
  * @author : xbx
- * @date : 2022/6/12 10:16
+ * @date : 2022/9/3 17:35
  */
 @Data
-public class UserVo {
+public class UserAllInfoDto {
 
     private Long id;
     private String username;
@@ -21,4 +23,6 @@ public class UserVo {
     private String header;
 
     private Date lastLoginTime;
+
+    private List<RoleVo> roleVos;
 }

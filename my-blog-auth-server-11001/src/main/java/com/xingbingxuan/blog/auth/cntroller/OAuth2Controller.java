@@ -6,10 +6,14 @@ import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.xingbingxuan.blog.auth.feign.AccountFeignService;
+import com.xingbingxuan.blog.auth.feign.ThirdPartyFeignService;
+import com.xingbingxuan.blog.auth.serveice.GiteeClientService;
 import com.xingbingxuan.blog.utils.RedisUtil;
 import com.xingbingxuan.blog.utils.Result;
 import com.xingbingxuan.blog.utils.TokenUtil;
 import lombok.extern.slf4j.Slf4j;
+import me.zhyd.oauth.request.AuthRequest;
+import me.zhyd.oauth.utils.AuthStateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
@@ -31,76 +35,19 @@ import java.util.Map;
 @Slf4j
 public class OAuth2Controller {
 
-    private final String clientId = "25c3fe536bb82c3cab368d52792be50467c59a166835225f923dc7a9be0a2f66";
-    private final String clientSecret = "f99a91cd22c62519fe0e640ec8405424a99477565e8a63224d02e8ea6bb4a536";
-    private final String redirectUri = "http://localhost:11001/oauth2/gitee/success";
-    private final String giteeUrl = "https://gitee.com/oauth/token";
-
 
     @Autowired
-    private AccountFeignService accountFeignService;
-    @Autowired
-    private RedisTemplate redisTemplate;
+    private ThirdPartyFeignService thirdPartyFeignService;
 
 
-    /**
-     * 功能描述:
-     * <p>gitee 回调函数</p>
-     *
-     * @param code
-     * @return : java.lang.String
-     * @author : xbx
-     * @date : 2022/7/19 21:36
-     */
-    @GetMapping("/callback/gitee")
-    public String oauth2GiteeSuccess(@RequestParam("code") String code) {
 
-        //将code换区accessToken
-        Map<String, Object> paramMap = new HashMap<>();
-        paramMap.put("grant_type", "authorization_code");
-        paramMap.put("code", code);
-        paramMap.put("client_id", clientId);
-        paramMap.put("redirect_uri", redirectUri);
-        paramMap.put("client_secret", clientSecret);
+    @RequestMapping("giteeUrl")
+    public String giteeUrl(){
+        AuthRequest giteeAuthRequest = GiteeClientService.getGiteeAuthRequest();
+        String authorize = giteeAuthRequest.authorize(AuthStateUtils.createState());
 
 
-        HttpResponse giteeResponse = HttpRequest.post(giteeUrl).form(paramMap).execute();
-        //System.out.println(execute);
-        //登录成功
-        if (giteeResponse.getStatus() == 200) {
-            JSONObject giteeResultJson = JSONUtil.parseObj(giteeResponse.body());
-
-            Result result = accountFeignService.giteeLogin(giteeResultJson.get("access_token").toString());
-
-            if (result.getCode() == 200) {
-                JSONObject user = JSONUtil.parseObj(result.getObject());
-
-                System.out.println(user);
-                //获取token
-                String token = "user:token:"+TokenUtil.generateToken("1");
-                //存入redis
-                RedisUtil.set(token,user.toString(),60*60*24*7);
-                return "index";
-            } else {
-                return "Login";
-            }
-
-        } else {
-            return "Login";
-        }
-
-
-    }
-
-    @RequestMapping("/oauth/login/redirect")
-    @ResponseBody
-    public Map oauthRedirect(@RequestParam("code") String code){
-
-        HashMap<String, String> param = new HashMap<>();
-        param.put("grant_type","authorization_code");
-        String post = HttpUtil.post("http://localhost:11001/oauth/token", String.valueOf(param));
-
-        return null;
+        return "redirect:" + authorize;
     }
 
 }

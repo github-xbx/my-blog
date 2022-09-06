@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xingbingxuan.blog.account.mapper.RoleMapper">
+
+
+    <select id="selectAllByIds" resultType="com.xingbingxuan.blog.account.entity.RoleEntity">
+        select * from `role` where  role_id in
+        <foreach collection="list" item="roleId" index="index" open="(" close=")" separator=",">
+            #{roleId}
+        </foreach>
+
+
+    </select>
+
+    <select id="selectAllRoleByUserId" resultType="com.xingbingxuan.blog.account.entity.RoleEntity">
+    SELECT
+	    r.*
+    FROM
+	    `user_role_relation` AS urr
+	    LEFT JOIN `role` AS r ON r.role_id = urr.role_id
+    WHERE
+	    urr.user_id = #{userId}
+    </select>
+    <select id="selectOneById" resultType="com.xingbingxuan.blog.account.entity.RoleEntity">
+        SELECT * FROM `role` WHERE role_id = #{param1}
+    </select>
+</mapper>

@@ -1,18 +1,22 @@
 package com.xingbingxuan.blog.account.service.impl;
 
-import cn.hutool.http.HttpRequest;
-import cn.hutool.http.HttpResponse;
-import cn.hutool.json.JSONObject;
-import cn.hutool.json.JSONUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.xingbingxuan.blog.account.entity.RoleEntity;
 import com.xingbingxuan.blog.account.entity.UserEntity;
-import com.xingbingxuan.blog.account.mapper.AccountMapper;
+import com.xingbingxuan.blog.account.entity.UserRoleRelationEntity;
+import com.xingbingxuan.blog.account.entity.bo.UserAndRoleBo;
+import com.xingbingxuan.blog.account.mapper.RoleMapper;
+import com.xingbingxuan.blog.account.mapper.UserMapper;
+import com.xingbingxuan.blog.account.mapper.UserRoleRelationMapper;
 import com.xingbingxuan.blog.account.service.AccountService;
+import com.xingbingxuan.blog.config.PublicConfigUtil;
+import com.xingbingxuan.blog.dto.UserAllInfoDto;
+import com.xingbingxuan.blog.param.UserParam;
 import com.xingbingxuan.blog.utils.*;
+import com.xingbingxuan.blog.vo.RoleVo;
 import com.xingbingxuan.blog.vo.UserVo;
 import lombok.extern.slf4j.Slf4j;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -22,13 +26,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author : xbx
@@ -39,17 +43,20 @@ import java.util.concurrent.TimeUnit;
 public class AccountServiceImpl implements AccountService {
 
     @Autowired
-    private AccountMapper accountMapper;
+    private UserMapper userMapper;
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     @Autowired
-    private RestTemplate restTemplate;
+    private RoleMapper roleMapper;
+    @Autowired
+    private UserRoleRelationMapper userRoleRelationMapper;
+
 
     @Override
     public PageInfo<UserEntity> queryAllUserPage(Integer pageNum, Integer pageSize) {
 
         PageHelper.startPage(pageNum, pageSize);
-        List<UserEntity> users = accountMapper.selectAllUser();
+        List<UserEntity> users = userMapper.selectAllUser();
 
         PageInfo<UserEntity> pageInfo = new PageInfo<>(users);
 
@@ -60,61 +67,87 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public UserEntity selectOneByUsernameAndSocialUid(UserEntity userEntity) {
 
-        return accountMapper.selectOneAnd(userEntity);
+        return null;
     }
 
     @Override
-    public Integer addAccount(UserEntity userEntity) {
-        return 1;
-    }
+    public UserAndRoleBo selectOrSaveUserBySocialUidAndSocialType(UserParam userParam) {
 
-    @Override
-    public UserEntity giteeLogin(String token) {
+        UserEntity parma = new UserEntity();
 
-        //根据accessToken获取gitee账户的基本信息
-        HttpResponse accessTokenResponse = HttpRequest.get("https://gitee.com/api/v5/user")
-                .form("access_token", token)
-                .execute();
-        //初始化一个对象用于返回
-        UserEntity user = null;
+        BeanUtils.copyProperties(userParam,parma);
+        UserAndRoleBo userAndRoleBo = userMapper.selectOneAnd(parma);
 
-        if (accessTokenResponse.getStatus() == 200) {
-            JSONObject userInfoJson = JSONUtil.parseObj(accessTokenResponse.body());
-            log.info("gitee 返回的用户信息 -> {}",userInfoJson.toString());
-            UserEntity userEntity = new UserEntity();
-            userEntity.setUsername("gitee_" + userInfoJson.get("name").toString());
-            userEntity.setSocialType("gitee");
-            userEntity.setSocialUid(userInfoJson.get("id").toString());
+        if (userAndRoleBo != null){
+            //更新登录时间
+            UserEntity updateUser = new UserEntity();
+            BeanUtils.copyProperties(userAndRoleBo,updateUser);
+            updateUser.setIntegration(userAndRoleBo.getIntegration() +1);
+            updateUser.setLastLoginTime(Calendar.getInstance().getTime());
+            this.userMapper.updateUserById(updateUser);
 
-            //根据信息产询账户表中是否存在该用户
-            user = accountMapper.selectOneAnd(userEntity);
-            if (user == null) {
-                //账户不存在，注册
-                userEntity.setCreateTime(Calendar.getInstance().getTime());
-                userEntity.setPassword(bCryptPasswordEncoder.encode("00000000"));
-                userEntity.setHeader(userInfoJson.get("avatar_url").toString());
-                Integer integer = accountMapper.insertAccount(userEntity);
-                if (integer > 0) {
-                    //添加成功，注册成功
-                    userEntity.setPassword(null);
-                    user = userEntity;
-                }
-            } else {
-                //存在
-            }
+        }else { //添加
+
+            UserEntity insertParam = new UserEntity();
+            BeanUtils.copyProperties(userParam,insertParam);
+            userAndRoleBo = this.addDefaultUser(insertParam);
+
         }
-        return user;
+
+        return userAndRoleBo;
     }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED,rollbackFor = Exception.class)
+    public UserAndRoleBo addDefaultUser(UserEntity userEntity) {
+
+        UserEntity insertUser = new UserEntity();
+        //默认头像图片
+        insertUser.setHeader(PublicConfigUtil.USER_DEFAULT_HEADER_IMAGE_URL);
+        insertUser.setCreateTime(Calendar.getInstance().getTime());
+        insertUser.setLastLoginTime(Calendar.getInstance().getTime());
+        //默认用户名 第三方类型+ _随机字符串
+        insertUser.setUsername(userEntity.getSocialType()+"_"+CodeUtil.createCode());
+        //默认密码
+        insertUser.setPassword(bCryptPasswordEncoder.encode(PublicConfigUtil.USER_DEFAULT_PASSWORD));
+        insertUser.setSocialUid(userEntity.getSocialUid());
+        insertUser.setSocialType( userEntity.getSocialType());
+        this.userMapper.insertAccount(insertUser);
+
+        //添加用户的默认角色（权限）
+        UserRoleRelationEntity userRoleRelationEntity = new UserRoleRelationEntity();
+        userRoleRelationEntity.setUserId(insertUser.getId());
+        userRoleRelationEntity.setRoleId(1);
+
+        //添加用户的角色信息
+        userRoleRelationMapper.insertUserRoleRelation(userRoleRelationEntity);
+
+        //获取默认角色的信息
+        RoleEntity roleEntity = roleMapper.selectOneById(1);
+        RoleVo roleVo = new RoleVo();
+        BeanUtils.copyProperties(roleEntity,roleVo);
+
+        UserAndRoleBo userAndRoleBo = new UserAndRoleBo();
+        BeanUtils.copyProperties(insertUser,userAndRoleBo);
+        userAndRoleBo.setRoleVos(Arrays.asList(roleVo));
+
+        //密码不返回
+        userAndRoleBo.setPassword(null);
+
+        return userAndRoleBo;
+    }
+
+
 
     @Override
     public Integer queryAccountCount() {
-        return accountMapper.selectAccountCount();
+        return userMapper.selectAccountCount();
     }
 
     @Override
     public List queryAccountCountByThisWeek() {
 
-        List<UserEntity> users = accountMapper.selectByThisWeek();
+        List<UserEntity> users = userMapper.selectByThisWeek();
 
         List<String> time = DateTool.getThisWeekTime();
 
@@ -148,7 +181,7 @@ public class AccountServiceImpl implements AccountService {
             Integer userid = entry.getValue();
             UserEntity userEntity = new UserEntity();
             userEntity.setId(Long.valueOf(userid));
-            UserEntity userEntity1 = accountMapper.selectOneAnd(userEntity);
+            UserAndRoleBo userEntity1 = userMapper.selectOneAnd(userEntity);
             resultMap.put(entry.getKey().toString(),userEntity1.getHeader());
         }
 
@@ -156,16 +189,16 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public UserVo queryUserPasswordByUsername(String userName) {
+    public UserAllInfoDto queryUserPasswordByUsername(String userName) {
 
 
-        UserEntity selectOneAnd = accountMapper.selectPasswordByUserName(userName);
+        UserAndRoleBo selectOneAnd = userMapper.selectPasswordByUserName(userName);
 
-        UserVo userVo = new UserVo();
-        userVo.setUsername(userName);
-        userVo.setPassword(selectOneAnd.getPassword());
+        UserAllInfoDto result = new UserAllInfoDto();
 
-        return userVo;
+        BeanUtils.copyProperties(selectOneAnd,result);
+
+        return result;
     }
 
     @Override
@@ -179,14 +212,14 @@ public class AccountServiceImpl implements AccountService {
 
         UserEntity userEntity = new UserEntity();
         userEntity.setId(Long.valueOf(userId));
-        UserEntity user = accountMapper.selectOneAnd(userEntity);
+        UserAndRoleBo user = userMapper.selectOneAnd(userEntity);
 
         BeanUtils.copyProperties(user,userVo);
 
 
         userEntity.setLastLoginTime(new Date());
         userEntity.setIntegration(user.getIntegration()+1);
-        accountMapper.updateUserById(userEntity);
+        userMapper.updateUserById(userEntity);
 
         return userVo;
     }
@@ -213,28 +246,30 @@ public class AccountServiceImpl implements AccountService {
     public UserVo isAccount(Map param) {
 
         //封装用户信息
-        UserEntity userEntity = null;
+        UserAndRoleBo userEntity = null;
 
 
         UserEntity selectUser = new UserEntity();
         selectUser.setUsername((String) param.get("username"));
-        userEntity = this.accountMapper.selectOneAnd(selectUser);
+        userEntity = this.userMapper.selectOneAnd(selectUser);
 
         if (userEntity != null){
             userEntity.setIntegration(userEntity.getIntegration() +1);
             userEntity.setLastLoginTime(Calendar.getInstance().getTime());
-            this.accountMapper.updateUserById(userEntity);
+            UserEntity userEntity1 = new UserEntity();
+            BeanUtils.copyProperties(userEntity,userEntity1);
+            this.userMapper.updateUserById(userEntity1);
 
         }else { //添加
-            userEntity = new UserEntity();
-            userEntity.setHeader((String) param.get("header"));
-            userEntity.setCreateTime(Calendar.getInstance().getTime());
-            userEntity.setLastLoginTime(Calendar.getInstance().getTime());
-            userEntity.setUsername((String) param.get("username"));
-            userEntity.setPassword(new BCryptPasswordEncoder().encode("00000000"));//默认密码
-            userEntity.setSocialUid((String) param.get("socialUid"));
-            userEntity.setSocialType((String) param.get("socialType"));
-            this.accountMapper.insertAccount(userEntity);
+            UserEntity userEntity1 = new UserEntity();
+            userEntity1.setHeader((String) param.get("header"));
+            userEntity1.setCreateTime(Calendar.getInstance().getTime());
+            userEntity1.setLastLoginTime(Calendar.getInstance().getTime());
+            userEntity1.setUsername((String) param.get("username"));
+            userEntity1.setPassword(new BCryptPasswordEncoder().encode("00000000"));//默认密码
+            userEntity1.setSocialUid((String) param.get("socialUid"));
+            userEntity1.setSocialType((String) param.get("socialType"));
+            this.userMapper.insertAccount(userEntity1);
 
         }
 
@@ -247,28 +282,5 @@ public class AccountServiceImpl implements AccountService {
         return userVo;
     }
 
-    @Deprecated
-    public UserVo queryUserInfoByToken_1(String token) {
 
-        UserVo userVo = new UserVo();
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        LinkedMultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-        map.set("token",token);
-
-        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<MultiValueMap<String, String>>(map, headers);
-
-        ResponseEntity<Map> post = restTemplate.postForEntity(PublicConfigUtil.OAUTHCHECKTOKENURI, request, Map.class);
-
-        Map body = post.getBody();
-        String userName = (String) body.get("user_name");
-
-        UserEntity userEntity = new UserEntity();
-        userEntity.setUsername(userName);
-        UserEntity user = accountMapper.selectOneAnd(userEntity);
-        BeanUtils.copyProperties(user,userVo);
-
-        return userVo;
-    }
 }
