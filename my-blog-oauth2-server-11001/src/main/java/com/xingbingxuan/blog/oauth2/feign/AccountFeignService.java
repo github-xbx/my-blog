@@ -1,20 +1,31 @@
-package com.xingbingxuan.blog.thirdparty.feign;
+package com.xingbingxuan.blog.oauth2.feign;
 
 import com.xingbingxuan.blog.dto.UserAllInfoDto;
 import com.xingbingxuan.blog.param.UserParam;
-import com.xingbingxuan.blog.vo.UserVo;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import java.util.Map;
 
 /**
  * @author : xbx
- * @date : 2022/7/25 22:30
+ * @date : 2022/3/24 22:16
  */
 @FeignClient("my-blog-account")
-public interface AccountServiceFeign {
+public interface AccountFeignService {
+
+    /**
+     * 功能描述:
+     * <p>根据用户名获取用户信息，oauth2 普通用户登录查询</p>
+     *
+     * @param userName
+     * @return : com.xingbingxuan.blog.dto.UserAllInfoDto
+     * @author : xbx
+     * @date : 2022/9/5 21:56
+     */
+    @PostMapping("/userFeignInterface/userLogin")
+    public UserAllInfoDto userLogin(@RequestBody String userName);
+
     /**
      * 功能描述:
      * <p>根据第三方登录的类型和uid获取用户信息，oauth2 第三方应用登录</p>

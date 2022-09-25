@@ -21,4 +21,7 @@ public class UserVo {
     private String header;
 
     private Date lastLoginTime;
+
+    //角色
+    private List<RoleVo> roleVos;
 }

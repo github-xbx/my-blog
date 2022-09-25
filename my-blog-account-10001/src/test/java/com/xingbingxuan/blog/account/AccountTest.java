@@ -1,16 +1,16 @@
 package com.xingbingxuan.blog.account;
 
 import com.xingbingxuan.blog.account.entity.UserEntity;
-import com.xingbingxuan.blog.account.mapper.AccountMapper;
-import com.xingbingxuan.blog.utils.JwtUtil;
+import com.xingbingxuan.blog.account.entity.bo.UserAndRoleBo;
+import com.xingbingxuan.blog.account.mapper.UserMapper;
+import com.xingbingxuan.blog.account.service.AccountService;
+import com.xingbingxuan.blog.utils.CodeUtil;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
 
 /**
  * @author : xbx
@@ -21,8 +21,10 @@ import java.util.List;
 public class AccountTest {
 
     @Autowired
-    AccountMapper accountMapper;
+    UserMapper userMapper;
 
+    @Autowired
+    AccountService accountService;
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -30,15 +32,15 @@ public class AccountTest {
     @Test
     public void test003(){
 
+        UserAndRoleBo gitee_xing = userMapper.selectPasswordByUserName("gitee_xing");
+        System.out.println(gitee_xing);
 
-        List<UserEntity> userEntities = accountMapper.selectAllUser();
-        userEntities.forEach(System.out::println);
     }
 
     @Test
     public void test002(){
-        String encode = bCryptPasswordEncoder.encode("121212");
-        System.out.println(encode);
+        String code = CodeUtil.createCode();
+        System.out.println(code);
     }
 
 
@@ -51,7 +53,7 @@ public class AccountTest {
         userEntity1.setNickname("12121");
         userEntity1.setHeader("211212121");
 
-        Integer integer = accountMapper.insertAccount(userEntity1);
+        Integer integer = userMapper.insertAccount(userEntity1);
         System.out.println(integer);
     }
 }

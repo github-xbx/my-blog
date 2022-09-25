@@ -241,12 +241,15 @@ public class AccountServiceImpl implements AccountService {
 
     }
 
+    @Deprecated
     @Override
     @Transactional(rollbackFor = Exception.class)
     public UserVo isAccount(Map param) {
 
         //封装用户信息
         UserAndRoleBo userEntity = null;
+
+        UserVo userVo = new UserVo();
 
 
         UserEntity selectUser = new UserEntity();
@@ -259,24 +262,27 @@ public class AccountServiceImpl implements AccountService {
             UserEntity userEntity1 = new UserEntity();
             BeanUtils.copyProperties(userEntity,userEntity1);
             this.userMapper.updateUserById(userEntity1);
-
+            log.info("user -> {}",userEntity);
+            BeanUtils.copyProperties(userEntity,userVo);
         }else { //添加
             UserEntity userEntity1 = new UserEntity();
             userEntity1.setHeader((String) param.get("header"));
             userEntity1.setCreateTime(Calendar.getInstance().getTime());
             userEntity1.setLastLoginTime(Calendar.getInstance().getTime());
             userEntity1.setUsername((String) param.get("username"));
-            userEntity1.setPassword(new BCryptPasswordEncoder().encode("00000000"));//默认密码
+            //默认密码
+            userEntity1.setPassword(new BCryptPasswordEncoder().encode("00000000"));
             userEntity1.setSocialUid((String) param.get("socialUid"));
             userEntity1.setSocialType((String) param.get("socialType"));
-            this.userMapper.insertAccount(userEntity1);
+            Integer integer = this.userMapper.insertAccount(userEntity1);
+            log.info("user -> {}",userEntity1);
+            BeanUtils.copyProperties(userEntity1,userVo);
 
         }
 
 
-        log.info("user -> {}",userEntity);
-        UserVo userVo = new UserVo();
-        BeanUtils.copyProperties(userEntity,userVo);
+
+
 
 
         return userVo;

@@ -3,6 +3,7 @@ package com.xingbingxuan.blog.account.controller;
 import com.github.pagehelper.PageInfo;
 import com.xingbingxuan.blog.account.entity.UserEntity;
 import com.xingbingxuan.blog.account.service.AccountService;
+import com.xingbingxuan.blog.annotation.Role;
 import com.xingbingxuan.blog.utils.Result;
 import com.xingbingxuan.blog.vo.UserVo;
 import lombok.extern.slf4j.Slf4j;
@@ -90,6 +91,7 @@ public class UserController {
      * @date : 2022/7/11 22:37
      */
     @GetMapping("userInfo")
+    @Role(value = {"user"})
     public Result queryUserInfo(HttpServletRequest request){
         String token = request.getHeader("Authorization");
         token = token.substring(token.lastIndexOf(" ")+1);
@@ -135,6 +137,7 @@ public class UserController {
      * @author : xbx
      * @date : 2022/7/25 22:28
      */
+    @Deprecated
     @PostMapping("thirdLogin")
     public UserVo loginAndRegister(@RequestBody Map param){
         UserVo account = this.accountService.isAccount(param);

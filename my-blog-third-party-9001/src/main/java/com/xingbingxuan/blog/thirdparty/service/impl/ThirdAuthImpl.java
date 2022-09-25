@@ -3,8 +3,12 @@ package com.xingbingxuan.blog.thirdparty.service.impl;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.xingbingxuan.blog.config.PublicConfigUtil;
+import com.xingbingxuan.blog.dto.UserAllInfoDto;
+import com.xingbingxuan.blog.param.UserParam;
 import com.xingbingxuan.blog.thirdparty.feign.AccountServiceFeign;
+import com.xingbingxuan.blog.thirdparty.feign.AuthorizeServiceFeign;
 import com.xingbingxuan.blog.thirdparty.service.ThirdAuth;
+import com.xingbingxuan.blog.token.AccessToken;
 import com.xingbingxuan.blog.utils.*;
 import com.xingbingxuan.blog.vo.UserVo;
 import lombok.SneakyThrows;
@@ -33,6 +37,10 @@ public class ThirdAuthImpl implements ThirdAuth {
 
     @Autowired
     private AccountServiceFeign accountServiceFeign;
+    @Autowired
+    private AuthorizeServiceFeign authorizeServiceFeign;
+
+
     /**
      * 功能描述:
      * <p>获取Gitee的authRequest</p>
@@ -74,38 +82,39 @@ public class ThirdAuthImpl implements ThirdAuth {
             JSONObject giteeResultJson = JSONUtil.parseObj(login.getData());
 
             //log.info("返回的信息 -> {}", giteeResultJson);
-            Map<Object, Object> param = new HashMap<>();
 
-            param.put("header", giteeResultJson.get("avatar"));
-            param.put("username", giteeResultJson.get("username"));
-            param.put("socialUid", giteeResultJson.get("uuid"));
-            param.put("socialType", giteeResultJson.get("source"));
+            //根据第三方的类型和uid在用户表中查询是否有该用户，没有就添加一个
+            UserParam userParam = new UserParam();
+            userParam.setSocialUid(String.valueOf(giteeResultJson.get("uuid")));
+            userParam.setSocialType(String.valueOf(giteeResultJson.get("source")));
+            UserAllInfoDto user = accountServiceFeign.thirdPartyLogin(userParam);
 
-            UserVo user = accountServiceFeign.loginAndRegister(param);
 
             if (user != null) {
 
-                //获取key 用于redis存储
-                String key = TokenUtil.getTokenKey(user.getId());
+//                //获取key 用于redis存储
+//                String key = TokenUtil.getTokenKey(user.getId());
+//
+//                byte[] serializeKey = SerializeUtil.serializeKey(key);
+//
+//                byte[] token = SerializeUtil.serializeObject(user.getId() + "-" + DateTool.getNowTimeString("yyyyMMddHHmmss"));
+//                //将token转换为string 用于返回页面
+//                String tokenStr = Base64.getEncoder().encodeToString(token);
+//
+//                //判断用户是否存在
+//                byte[] bytes = (byte[]) RedisUtil.get(serializeKey);
+//                if (bytes != null && bytes.length > 0) {
+//                    //用户的凭证存在
+//                    RedisUtil.del(serializeKey);
+//                }
+//                //存入redis
+//                RedisUtil.set(serializeKey, token, DateTool.getDayTime(7));
 
-                byte[] serializeKey = SerializeUtil.serializeKey(key);
-
-                byte[] token = SerializeUtil.serializeObject(user.getId() + "-" + DateTool.getNowTimeString("yyyyMMddHHmmss"));
-                //将token转换为string 用于返回页面
-                String tokenStr = Base64.getEncoder().encodeToString(token);
-
-                //判断用户是否存在
-                byte[] bytes = (byte[]) RedisUtil.get(serializeKey);
-                if (bytes != null && bytes.length > 0) {
-                    //用户的凭证存在
-                    RedisUtil.del(serializeKey);
-                }
-                //存入redis
-                RedisUtil.set(serializeKey, token, DateTool.getDayTime(7));
+                AccessToken accessToken = authorizeServiceFeign.thirdPartyLoginToken(user);
 
                 result.put("login", "success");
                 JSONObject userInfo = new JSONObject();
-                userInfo.putOnce("token",tokenStr);
+                userInfo.putOnce("token",accessToken.getToken());
 
                 userInfo.putOnce("user",user);
                 result.put("userInfo", userInfo);
