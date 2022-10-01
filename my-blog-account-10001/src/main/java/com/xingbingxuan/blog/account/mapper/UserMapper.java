@@ -1,7 +1,7 @@
 package com.xingbingxuan.blog.account.mapper;
 
 import com.xingbingxuan.blog.account.entity.UserEntity;
-import com.xingbingxuan.blog.account.entity.bo.UserAndRoleBo;
+import com.xingbingxuan.blog.account.entity.bo.UserAndRoleRelation;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -22,7 +22,7 @@ public interface UserMapper {
      * @author : xbx
      * @date : 2022/3/26 21:50
      */
-    UserAndRoleBo selectOneAnd(UserEntity userEntity);
+    UserAndRoleRelation selectOneAnd(UserEntity userEntity);
 
     /**
      * 功能描述:
@@ -79,7 +79,7 @@ public interface UserMapper {
      * @author : xbx
      * @date : 2022/6/26 9:39
      */
-    UserAndRoleBo selectPasswordByUserName(String username);
+    UserAndRoleRelation selectPasswordByUserName(String username);
 
     /**
      * 功能描述:
@@ -90,4 +90,15 @@ public interface UserMapper {
      * @date : 2022/7/17 18:16
      */
     int updateUserById(UserEntity userEntity);
+
+    /**
+     * 功能描述:
+     * <p>根据用户名或邮箱查询用户信息包括角色信息（用于登录验证）</p>
+     *
+     * @param userEntity
+     * @return : com.xingbingxuan.blog.account.entity.bo.UserAndRoleBo
+     * @author : xbx
+     * @date : 2022/10/1 10:19
+     */
+    UserAndRoleRelation selectPasswordByUserNameOrEmail(UserEntity userEntity);
 }

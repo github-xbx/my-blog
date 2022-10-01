@@ -1,11 +1,14 @@
 package com.xingbingxuan.blog.account.service.impl;
 
+import cn.hutool.json.JSON;
+import cn.hutool.json.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.xingbingxuan.blog.account.entity.RoleEntity;
 import com.xingbingxuan.blog.account.entity.UserEntity;
 import com.xingbingxuan.blog.account.entity.UserRoleRelationEntity;
-import com.xingbingxuan.blog.account.entity.bo.UserAndRoleBo;
+import com.xingbingxuan.blog.account.entity.bo.UserAndRoleRelation;
+import com.xingbingxuan.blog.account.feign.AccountAuthorizeServiceFeign;
 import com.xingbingxuan.blog.account.mapper.RoleMapper;
 import com.xingbingxuan.blog.account.mapper.UserMapper;
 import com.xingbingxuan.blog.account.mapper.UserRoleRelationMapper;
@@ -13,24 +16,20 @@ import com.xingbingxuan.blog.account.service.AccountService;
 import com.xingbingxuan.blog.config.PublicConfigUtil;
 import com.xingbingxuan.blog.dto.UserAllInfoDto;
 import com.xingbingxuan.blog.param.UserParam;
+import com.xingbingxuan.blog.token.AccessToken;
 import com.xingbingxuan.blog.utils.*;
 import com.xingbingxuan.blog.vo.RoleVo;
 import com.xingbingxuan.blog.vo.UserVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
 
@@ -50,6 +49,8 @@ public class AccountServiceImpl implements AccountService {
     private RoleMapper roleMapper;
     @Autowired
     private UserRoleRelationMapper userRoleRelationMapper;
+    @Autowired
+    private AccountAuthorizeServiceFeign accountAuthorizeServiceFeign;
 
 
     @Override
@@ -65,24 +66,82 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public UserEntity selectOneByUsernameAndSocialUid(UserEntity userEntity) {
+    @Transactional(propagation = Propagation.REQUIRED,rollbackFor = Exception.class)
+    public JSON userLogin(Map<String,String> userParam) {
 
-        return null;
+        String username = userParam.get("username");
+
+        UserAndRoleRelation usernameAndPassword = null;
+        JSONObject result = new JSONObject();
+
+        if (username.matches(PublicConfigUtil.REGULAR_EMAIL)){
+            //邮箱
+            UserEntity user = new UserEntity();
+            user.setEmail(username);
+            usernameAndPassword = userMapper.selectPasswordByUserNameOrEmail(user);
+
+
+        }else {
+            //用户名
+            UserEntity user = new UserEntity();
+            user.setUsername(username);
+            usernameAndPassword = userMapper.selectPasswordByUserNameOrEmail(user);
+
+        }
+
+        if (usernameAndPassword == null){
+            throw new UsernameNotFoundException("用户不存在");
+        }
+        //验证密码
+        String passwordStr = userParam.get("password");
+        if (!bCryptPasswordEncoder.matches(passwordStr,usernameAndPassword.getPassword())){
+            throw new BadCredentialsException("密码错误");
+
+        }
+        //更新登录时间
+        UserEntity updateUser = new UserEntity();
+        BeanUtils.copyProperties(usernameAndPassword,updateUser);
+        updateUser.setIntegration(usernameAndPassword.getIntegration() +1);
+        updateUser.setLastLoginTime(Calendar.getInstance().getTime());
+        this.userMapper.updateUserById(updateUser);
+
+        //获取token
+        UserAllInfoDto userAllInfoDto = new UserAllInfoDto();
+
+        BeanUtils.copyProperties(usernameAndPassword,userAllInfoDto);
+
+        AccessToken accessToken = accountAuthorizeServiceFeign.loginToken(userAllInfoDto);
+
+        //封装返回信息
+        result.putOnce("token",accessToken.getToken());
+        result.putOnce("user",userAllInfoDto);
+
+
+
+        return result;
     }
 
+
+
+
+
+
+
+
     @Override
-    public UserAndRoleBo selectOrSaveUserBySocialUidAndSocialType(UserParam userParam) {
+    @Transactional
+    public UserAndRoleRelation selectOrSaveUserBySocialUidAndSocialType(UserParam userParam) {
 
         UserEntity parma = new UserEntity();
 
         BeanUtils.copyProperties(userParam,parma);
-        UserAndRoleBo userAndRoleBo = userMapper.selectOneAnd(parma);
+        UserAndRoleRelation userAndRoleRelation = userMapper.selectOneAnd(parma);
 
-        if (userAndRoleBo != null){
+        if (userAndRoleRelation != null){
             //更新登录时间
             UserEntity updateUser = new UserEntity();
-            BeanUtils.copyProperties(userAndRoleBo,updateUser);
-            updateUser.setIntegration(userAndRoleBo.getIntegration() +1);
+            BeanUtils.copyProperties(userAndRoleRelation,updateUser);
+            updateUser.setIntegration(userAndRoleRelation.getIntegration() +1);
             updateUser.setLastLoginTime(Calendar.getInstance().getTime());
             this.userMapper.updateUserById(updateUser);
 
@@ -90,16 +149,16 @@ public class AccountServiceImpl implements AccountService {
 
             UserEntity insertParam = new UserEntity();
             BeanUtils.copyProperties(userParam,insertParam);
-            userAndRoleBo = this.addDefaultUser(insertParam);
+            userAndRoleRelation = this.addDefaultUser(insertParam);
 
         }
 
-        return userAndRoleBo;
+        return userAndRoleRelation;
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED,rollbackFor = Exception.class)
-    public UserAndRoleBo addDefaultUser(UserEntity userEntity) {
+    public UserAndRoleRelation addDefaultUser(UserEntity userEntity) {
 
         UserEntity insertUser = new UserEntity();
         //默认头像图片
@@ -127,14 +186,14 @@ public class AccountServiceImpl implements AccountService {
         RoleVo roleVo = new RoleVo();
         BeanUtils.copyProperties(roleEntity,roleVo);
 
-        UserAndRoleBo userAndRoleBo = new UserAndRoleBo();
-        BeanUtils.copyProperties(insertUser,userAndRoleBo);
-        userAndRoleBo.setRoleVos(Arrays.asList(roleVo));
+        UserAndRoleRelation userAndRoleRelation = new UserAndRoleRelation();
+        BeanUtils.copyProperties(insertUser, userAndRoleRelation);
+        userAndRoleRelation.setRoleVos(Arrays.asList(roleVo));
 
         //密码不返回
-        userAndRoleBo.setPassword(null);
+        userAndRoleRelation.setPassword(null);
 
-        return userAndRoleBo;
+        return userAndRoleRelation;
     }
 
 
@@ -181,7 +240,7 @@ public class AccountServiceImpl implements AccountService {
             Integer userid = entry.getValue();
             UserEntity userEntity = new UserEntity();
             userEntity.setId(Long.valueOf(userid));
-            UserAndRoleBo userEntity1 = userMapper.selectOneAnd(userEntity);
+            UserAndRoleRelation userEntity1 = userMapper.selectOneAnd(userEntity);
             resultMap.put(entry.getKey().toString(),userEntity1.getHeader());
         }
 
@@ -192,7 +251,7 @@ public class AccountServiceImpl implements AccountService {
     public UserAllInfoDto queryUserPasswordByUsername(String userName) {
 
 
-        UserAndRoleBo selectOneAnd = userMapper.selectPasswordByUserName(userName);
+        UserAndRoleRelation selectOneAnd = userMapper.selectPasswordByUserName(userName);
 
         UserAllInfoDto result = new UserAllInfoDto();
 
@@ -212,7 +271,7 @@ public class AccountServiceImpl implements AccountService {
 
         UserEntity userEntity = new UserEntity();
         userEntity.setId(Long.valueOf(userId));
-        UserAndRoleBo user = userMapper.selectOneAnd(userEntity);
+        UserAndRoleRelation user = userMapper.selectOneAnd(userEntity);
 
         BeanUtils.copyProperties(user,userVo);
 
@@ -247,7 +306,7 @@ public class AccountServiceImpl implements AccountService {
     public UserVo isAccount(Map param) {
 
         //封装用户信息
-        UserAndRoleBo userEntity = null;
+        UserAndRoleRelation userEntity = null;
 
         UserVo userVo = new UserVo();
 

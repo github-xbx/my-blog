@@ -1,11 +1,14 @@
 package com.xingbingxuan.blog.account.service;
 
+import cn.hutool.json.JSON;
 import com.github.pagehelper.PageInfo;
 import com.xingbingxuan.blog.account.entity.UserEntity;
-import com.xingbingxuan.blog.account.entity.bo.UserAndRoleBo;
+import com.xingbingxuan.blog.account.entity.bo.UserAndRoleRelation;
 import com.xingbingxuan.blog.dto.UserAllInfoDto;
 import com.xingbingxuan.blog.param.UserParam;
+import com.xingbingxuan.blog.token.AccessToken;
 import com.xingbingxuan.blog.vo.UserVo;
+import org.bouncycastle.openssl.PasswordException;
 
 import java.util.List;
 import java.util.Map;
@@ -29,15 +32,15 @@ public interface AccountService {
 
     /**
      * 功能描述:
-     * <p>根据用户名和邮箱产询</p>
+     * <p>用户登录</p>
      *
-     * @param userEntity description
-     * @return : com.xingbingxuan.blog.account.entity.UserEntity
-     *
+     * @param userMap 用户名或邮箱（username） 和 密码（password）
+     * @return : com.xingbingxuan.blog.vo.UserVo
      * @author : xbx
-     * @date : 2022/3/25 20:13
+     * @date : 2022/9/30 23:45
      */
-    UserEntity selectOneByUsernameAndSocialUid(UserEntity userEntity);
+    JSON userLogin(Map<String,String> userMap);
+
     /**
      * 功能描述:
      * <p>根据第三方应用的type和uid查询用户信息，如果不存在该第三方关联的用户，则新增一个</p>
@@ -47,7 +50,7 @@ public interface AccountService {
      * @author : xbx
      * @date : 2022/9/5 22:05
      */
-    UserAndRoleBo selectOrSaveUserBySocialUidAndSocialType(UserParam userParam);
+    UserAndRoleRelation selectOrSaveUserBySocialUidAndSocialType(UserParam userParam);
 
     /**
      * 功能描述:
@@ -59,7 +62,7 @@ public interface AccountService {
      * @author : xbx
      * @date : 2022/3/25 20:33
      */
-    UserAndRoleBo addDefaultUser(UserEntity userEntity);
+    UserAndRoleRelation addDefaultUser(UserEntity userEntity);
 
 
     /**

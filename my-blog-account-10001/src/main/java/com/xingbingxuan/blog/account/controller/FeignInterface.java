@@ -1,13 +1,11 @@
 package com.xingbingxuan.blog.account.controller;
 
-import com.xingbingxuan.blog.account.entity.UserEntity;
-import com.xingbingxuan.blog.account.entity.bo.UserAndRoleBo;
+import com.xingbingxuan.blog.account.entity.bo.UserAndRoleRelation;
 import com.xingbingxuan.blog.account.service.AccountService;
 import com.xingbingxuan.blog.dto.UserAllInfoDto;
 import com.xingbingxuan.blog.param.UserParam;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -53,11 +51,11 @@ public class FeignInterface {
     @PostMapping("/thirdPartyLogin")
     public UserAllInfoDto thirdPartyLogin(@RequestBody UserParam userParam){
 
-        UserAndRoleBo userAndRoleBo = accountService.selectOrSaveUserBySocialUidAndSocialType(userParam);
+        UserAndRoleRelation userAndRoleRelation = accountService.selectOrSaveUserBySocialUidAndSocialType(userParam);
 
         UserAllInfoDto result = new UserAllInfoDto();
 
-        BeanUtils.copyProperties(userAndRoleBo,result);
+        BeanUtils.copyProperties(userAndRoleRelation,result);
 
         return result;
     }

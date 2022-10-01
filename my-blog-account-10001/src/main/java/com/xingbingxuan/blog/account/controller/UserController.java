@@ -1,9 +1,11 @@
 package com.xingbingxuan.blog.account.controller;
 
+import cn.hutool.json.JSON;
 import com.github.pagehelper.PageInfo;
 import com.xingbingxuan.blog.account.entity.UserEntity;
 import com.xingbingxuan.blog.account.service.AccountService;
 import com.xingbingxuan.blog.annotation.Role;
+import com.xingbingxuan.blog.param.UserParam;
 import com.xingbingxuan.blog.utils.Result;
 import com.xingbingxuan.blog.vo.UserVo;
 import lombok.extern.slf4j.Slf4j;
@@ -126,6 +128,23 @@ public class UserController {
         }
 
 
+    }
+
+    /**
+     * 功能描述:
+     * <p>用户登录操作</p>
+     *
+     * @param param
+     * @return : com.xingbingxuan.blog.utils.Result
+     * @author : xbx
+     * @date : 2022/10/1 11:02
+     */
+    @PostMapping("login")
+    public Result userLogin(@RequestBody Map<String,String> param){
+
+        JSON login = accountService.userLogin(param);
+
+        return Result.success(login);
     }
 
     /**

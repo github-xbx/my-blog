@@ -36,8 +36,8 @@ public class AuthController {
      * @author : xbx
      * @date : 2022/9/25 15:41
      */
-    @PostMapping("thirdPartyLoginToken")
-    public AccessToken thirdPartyLoginToken(@RequestBody UserAllInfoDto user){
+    @PostMapping("loginToken")
+    public AccessToken loginToken(@RequestBody UserAllInfoDto user){
 
         Authentication authentication = new Authentication();
         authentication.setUserId(user.getId().toString());

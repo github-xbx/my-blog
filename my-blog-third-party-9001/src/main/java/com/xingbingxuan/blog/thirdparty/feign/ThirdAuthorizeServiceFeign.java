@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
  * @date : 2022/9/25 16:55
  */
 @FeignClient("my-blog-authorize-server")
-public interface AuthorizeServiceFeign {
+public interface ThirdAuthorizeServiceFeign {
 
     /**
      * 功能描述:
@@ -23,7 +23,7 @@ public interface AuthorizeServiceFeign {
      * @author : xbx
      * @date : 2022/9/25 15:41
      */
-    @PostMapping("auth/thirdPartyLoginToken")
-    public AccessToken thirdPartyLoginToken(@RequestBody UserAllInfoDto user);
+    @PostMapping("auth/loginToken")
+    public AccessToken loginToken(@RequestBody UserAllInfoDto user);
 
 }

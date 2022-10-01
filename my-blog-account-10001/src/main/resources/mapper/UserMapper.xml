@@ -3,7 +3,7 @@
 
 <mapper namespace="com.xingbingxuan.blog.account.mapper.UserMapper">
 
-    <resultMap id="UserResultMap" type="com.xingbingxuan.blog.account.entity.bo.UserAndRoleBo">
+    <resultMap id="UserResultMap" type="com.xingbingxuan.blog.account.entity.bo.UserAndRoleRelation">
         <id column="id" property="id" javaType="Long"/>
         <result column="username" property="username" javaType="String"/>
         <result column="password" property="password" javaType="String"/>
@@ -237,4 +237,14 @@
         SELECT id, username,password FROM `user` WHERE username = #{param1} AND status = 1
     </select>
 
+
+    <select id="selectPasswordByUserNameOrEmail" resultMap="UserResultMap" parameterType="com.xingbingxuan.blog.account.entity.UserEntity">
+        SELECT id, username, password, header , last_login_time,integration FROM  `user` WHERE status = 1
+        <if test="email != null and email != '' ">
+            and email = #{email}
+        </if>
+        <if test="username != null and username != ''">
+            and username = #{username}
+        </if>
+    </select>
 </mapper>

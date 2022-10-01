@@ -50,6 +50,6 @@ buildNumber.properties
 *.iml
 .gitignore
 
-
+**/src/test/java/
 
 

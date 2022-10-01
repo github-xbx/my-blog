@@ -6,11 +6,9 @@ import com.xingbingxuan.blog.config.PublicConfigUtil;
 import com.xingbingxuan.blog.dto.UserAllInfoDto;
 import com.xingbingxuan.blog.param.UserParam;
 import com.xingbingxuan.blog.thirdparty.feign.AccountServiceFeign;
-import com.xingbingxuan.blog.thirdparty.feign.AuthorizeServiceFeign;
+import com.xingbingxuan.blog.thirdparty.feign.ThirdAuthorizeServiceFeign;
 import com.xingbingxuan.blog.thirdparty.service.ThirdAuth;
 import com.xingbingxuan.blog.token.AccessToken;
-import com.xingbingxuan.blog.utils.*;
-import com.xingbingxuan.blog.vo.UserVo;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import me.zhyd.oauth.config.AuthConfig;
@@ -22,7 +20,6 @@ import me.zhyd.oauth.utils.AuthStateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,7 +35,7 @@ public class ThirdAuthImpl implements ThirdAuth {
     @Autowired
     private AccountServiceFeign accountServiceFeign;
     @Autowired
-    private AuthorizeServiceFeign authorizeServiceFeign;
+    private ThirdAuthorizeServiceFeign thirdAuthorizeServiceFeign;
 
 
     /**
@@ -110,7 +107,7 @@ public class ThirdAuthImpl implements ThirdAuth {
 //                //存入redis
 //                RedisUtil.set(serializeKey, token, DateTool.getDayTime(7));
 
-                AccessToken accessToken = authorizeServiceFeign.thirdPartyLoginToken(user);
+                AccessToken accessToken = thirdAuthorizeServiceFeign.loginToken(user);
 
                 result.put("login", "success");
                 JSONObject userInfo = new JSONObject();

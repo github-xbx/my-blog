@@ -42,6 +42,16 @@ public class PublicConfigUtil {
      */
     public static String USER_DEFAULT_HEADER_IMAGE_URL;
 
+    /**
+     * 手机号正则
+     */
+    public static String REGULAR_PHONE;
+
+    /**
+     *邮箱正则
+     */
+    public static String REGULAR_EMAIL;
+
     private static Properties properties;
 
     static {
@@ -59,6 +69,10 @@ public class PublicConfigUtil {
             BLOG_HOME_DOMAIN = properties.getProperty("blog.home.domain");
             USER_DEFAULT_PASSWORD = properties.getProperty("user.default.password");
             USER_DEFAULT_HEADER_IMAGE_URL = properties.getProperty("user.default.headerImageUrl");
+
+            REGULAR_PHONE = properties.getProperty("regular.phone");
+            REGULAR_EMAIL = properties.getProperty("regular.email");
+
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -15,7 +15,7 @@ import java.util.List;
  */
 @Data
 @ToString
-public class UserAndRoleBo {
+public class UserAndRoleRelation {
 
     private Long id;
 
