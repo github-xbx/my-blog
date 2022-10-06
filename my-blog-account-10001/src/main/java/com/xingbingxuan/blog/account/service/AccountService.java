@@ -10,6 +10,7 @@ import com.xingbingxuan.blog.token.AccessToken;
 import com.xingbingxuan.blog.vo.UserVo;
 import org.bouncycastle.openssl.PasswordException;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
@@ -121,12 +122,11 @@ public interface AccountService {
      * 功能描述:
      * <p>根据用户id 退出登录（登出）</p>
      *
-     * @param userId
      * @return : void
      * @author : xbx
      * @date : 2022/7/17 22:55
      */
-    Boolean  logout(Long userId,String token);
+    Boolean  logout();
 
     /**
      * 功能描述:

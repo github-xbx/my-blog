@@ -6,7 +6,6 @@ import com.xingbingxuan.blog.client.entity.CommentEntity;
 import com.xingbingxuan.blog.client.entity.LabelEntity;
 import com.xingbingxuan.blog.client.entity.SeriesEntity;
 import com.xingbingxuan.blog.client.entity.and.BlogAndSeries;
-import com.xingbingxuan.blog.client.entity.vo.BlogVo;
 import com.xingbingxuan.blog.client.mapper.BlogMapper;
 import com.xingbingxuan.blog.client.mapper.CommentMapper;
 import com.xingbingxuan.blog.client.mapper.LabelMapper;
@@ -15,14 +14,17 @@ import com.xingbingxuan.blog.client.service.BlogService;
 import com.xingbingxuan.blog.client.service.CommentService;
 import com.xingbingxuan.blog.database.Page;
 import com.xingbingxuan.blog.utils.RedisUtil;
+import com.xingbingxuan.blog.vo.BlogVo;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author : xbx
@@ -52,11 +54,13 @@ public class ClientTest {
 
 
     @Test
-    public void test005(){
-        RedisUtil.incr("blog:allReadCount");
-        Object o = RedisUtil.get("blog:allReadCount");
-        Integer integer = Integer.parseInt((String) o);
-        System.out.println(integer);
+    public void test005() {
+        Set<String> keys = RedisUtil.keys("blog:readCount:*");
+
+        keys.forEach(a -> {
+            String substring = a.substring(a.indexOf(":", a.indexOf(":")+1)+1);
+            System.out.println(substring);
+        });
     }
 
 

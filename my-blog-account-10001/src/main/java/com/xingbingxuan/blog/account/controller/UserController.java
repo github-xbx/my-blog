@@ -93,10 +93,9 @@ public class UserController {
      * @date : 2022/7/11 22:37
      */
     @GetMapping("userInfo")
-    @Role(value = {"user"})
-    public Result queryUserInfo(HttpServletRequest request){
-        String token = request.getHeader("Authorization");
-        token = token.substring(token.lastIndexOf(" ")+1);
+    @Role(value = {"ROLE_BLOG_USER"})
+    public Result queryUserInfo(String token){
+
         log.info(token);
         UserVo userVo = accountService.queryUserInfoByToken(token);
 
@@ -107,26 +106,21 @@ public class UserController {
      * 功能描述:
      * <p>用户的登出操作</p>
      *
-     * @param param
+     * @param request
      * @return : com.xingbingxuan.blog.utils.Result
      * @author : xbx
      * @date : 2022/7/17 22:58
      */
     @PostMapping("logout")
-    public Result userLogout(@RequestBody Map param, HttpServletRequest request){
+    @Role(value = {"ROLE_BLOG_USER"})
+    public Result userLogout(){
 
-        String token = request.getHeader("Authorization");
-
-        Integer userId = (Integer) param.get("userId");
-
-        Boolean aBoolean = accountService.logout(Long.valueOf(userId), token);
-
-        if (aBoolean){
+        Boolean logout = accountService.logout();
+        if (logout){
             return Result.success(true);
         }else {
-            return Result.error(400,"登出失败！！！");
+            return Result.error();
         }
-
 
     }
 

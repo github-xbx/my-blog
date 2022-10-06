@@ -1,11 +1,14 @@
 package com.xingbingxuan.blog.authorize.service.impl;
 
 import com.xingbingxuan.blog.authorize.service.TokenService;
+import com.xingbingxuan.blog.authorize.token.BearerTokenExtractor;
 import com.xingbingxuan.blog.token.AccessToken;
 import com.xingbingxuan.blog.token.AccessTokenUtil;
 import com.xingbingxuan.blog.token.Authentication;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author : xbx
@@ -51,18 +54,26 @@ public class TokenServiceImpl implements TokenService {
     }
 
     @Override
-    public void removeAccessToken(Authentication authentication) {
+    public Boolean removeAccessToken(HttpServletRequest request) {
+
+        Authentication authentication = new BearerTokenExtractor().extract(request);
 
         AccessToken accessToken = AccessTokenUtil.getAccessToken(authentication.getUserId(), authentication.getUsername());
+        try {
+            AccessTokenUtil.removeAccessToken(accessToken,authentication);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
 
-        AccessTokenUtil.removeAccessToken(accessToken,authentication);
+        return true;
 
     }
 
     @Override
-    public Authentication loadAuthentication(String accessTokenValue) {
+    public Authentication loadAuthentication(HttpServletRequest request) {
 
-        Authentication authentication = AccessTokenUtil.getAuthentication(accessTokenValue);
+        Authentication authentication = new BearerTokenExtractor().extract(request);
 
         return authentication;
     }

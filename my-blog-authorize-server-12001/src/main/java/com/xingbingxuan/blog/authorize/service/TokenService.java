@@ -3,6 +3,8 @@ package com.xingbingxuan.blog.authorize.service;
 import com.xingbingxuan.blog.token.AccessToken;
 import com.xingbingxuan.blog.token.Authentication;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * 授权token服务接口
  * @author : xbx
@@ -25,23 +27,23 @@ public interface TokenService {
      * 功能描述:
      * <p>删除一个用户的token</p>
      *
-     * @param authentication
+     * @param request
      * @return : com.xingbingxuan.blog.token.AccessToken
      * @author : xbx
      * @date : 2022/9/24 22:25
      */
-    public void removeAccessToken(Authentication authentication);
+    public Boolean removeAccessToken(HttpServletRequest request);
 
     /**
      * 功能描述:
-     * <p>加载身份验证,用于验证用户token的争取性</p>
+     * <p>加载身份验证,用于验证用户token 是否存在、是否正确</p>
      *
-     * @param accessTokenValue
+     * @param requeste
      * @return : com.xingbingxuan.blog.token.Authentication
      * @author : xbx
      * @date : 2022/9/24 22:21
      */
-    public Authentication loadAuthentication(String accessTokenValue);
+    public Authentication loadAuthentication(HttpServletRequest requeste);
 
 
 }

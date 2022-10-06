@@ -1,9 +1,10 @@
 package com.xingbingxuan.blog.account.exception;
 
+import com.xingbingxuan.blog.exception.BadCredentialsException;
+import com.xingbingxuan.blog.exception.UsernameNotFoundException;
 import com.xingbingxuan.blog.utils.Result;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;

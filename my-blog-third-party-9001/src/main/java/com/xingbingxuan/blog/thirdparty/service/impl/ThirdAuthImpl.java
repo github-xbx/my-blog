@@ -9,6 +9,7 @@ import com.xingbingxuan.blog.thirdparty.feign.AccountServiceFeign;
 import com.xingbingxuan.blog.thirdparty.feign.ThirdAuthorizeServiceFeign;
 import com.xingbingxuan.blog.thirdparty.service.ThirdAuth;
 import com.xingbingxuan.blog.token.AccessToken;
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import me.zhyd.oauth.config.AuthConfig;
@@ -67,18 +68,18 @@ public class ThirdAuthImpl implements ThirdAuth {
 
     @SneakyThrows
     @Override
+    @GlobalTransactional(name = "thirdGiteeLogin",rollbackFor = Exception.class)
     public Map<String, Object> giteeLogin(AuthCallback callback)  {
 
         HashMap<String, Object> result = new HashMap<>();
 
+        //请求gitee服务器获取授权
         AuthRequest giteeAuthRequest = getGiteeAuthRequest();
-
         AuthResponse login = giteeAuthRequest.login(callback);
 
         if (login.ok()) {
+            //解析返回的数据
             JSONObject giteeResultJson = JSONUtil.parseObj(login.getData());
-
-            //log.info("返回的信息 -> {}", giteeResultJson);
 
             //根据第三方的类型和uid在用户表中查询是否有该用户，没有就添加一个
             UserParam userParam = new UserParam();
@@ -88,25 +89,7 @@ public class ThirdAuthImpl implements ThirdAuth {
 
 
             if (user != null) {
-
-//                //获取key 用于redis存储
-//                String key = TokenUtil.getTokenKey(user.getId());
-//
-//                byte[] serializeKey = SerializeUtil.serializeKey(key);
-//
-//                byte[] token = SerializeUtil.serializeObject(user.getId() + "-" + DateTool.getNowTimeString("yyyyMMddHHmmss"));
-//                //将token转换为string 用于返回页面
-//                String tokenStr = Base64.getEncoder().encodeToString(token);
-//
-//                //判断用户是否存在
-//                byte[] bytes = (byte[]) RedisUtil.get(serializeKey);
-//                if (bytes != null && bytes.length > 0) {
-//                    //用户的凭证存在
-//                    RedisUtil.del(serializeKey);
-//                }
-//                //存入redis
-//                RedisUtil.set(serializeKey, token, DateTool.getDayTime(7));
-
+                //获取token
                 AccessToken accessToken = thirdAuthorizeServiceFeign.loginToken(user);
 
                 result.put("login", "success");

@@ -15,6 +15,8 @@ import com.xingbingxuan.blog.account.mapper.UserRoleRelationMapper;
 import com.xingbingxuan.blog.account.service.AccountService;
 import com.xingbingxuan.blog.config.PublicConfigUtil;
 import com.xingbingxuan.blog.dto.UserAllInfoDto;
+import com.xingbingxuan.blog.exception.BadCredentialsException;
+import com.xingbingxuan.blog.exception.UsernameNotFoundException;
 import com.xingbingxuan.blog.param.UserParam;
 import com.xingbingxuan.blog.token.AccessToken;
 import com.xingbingxuan.blog.utils.*;
@@ -23,14 +25,13 @@ import com.xingbingxuan.blog.vo.UserVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 /**
@@ -267,10 +268,10 @@ public class AccountServiceImpl implements AccountService {
 
         UserVo userVo = new UserVo();
 
-        String userId = TokenUtil.getObjectByToken(Base64.getDecoder().decode(token));
+
 
         UserEntity userEntity = new UserEntity();
-        userEntity.setId(Long.valueOf(userId));
+        userEntity.setId(Long.valueOf(1));
         UserAndRoleRelation user = userMapper.selectOneAnd(userEntity);
 
         BeanUtils.copyProperties(user,userVo);
@@ -284,20 +285,11 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public Boolean logout(Long userId,String token) {
+    public Boolean logout() {
 
-        Long loginUserId = Long.valueOf(TokenUtil.getObjectByToken(Base64.getDecoder().decode(token)));
+        Boolean aBoolean = accountAuthorizeServiceFeign.deleteToken();
 
-        if (loginUserId.equals(userId)){
-            byte[] key = SerializeUtil.serializeKey(TokenUtil.getTokenKey(userId));
-
-            RedisUtil.del(key);
-            return true;
-        }else {
-            return false;
-        }
-
-
+        return aBoolean;
     }
 
     @Deprecated

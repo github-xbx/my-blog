@@ -1,7 +1,11 @@
 package com.xingbingxuan.blog.account.interceptor;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.xingbingxuan.blog.account.feign.AccountAuthorizeServiceFeign;
+import com.xingbingxuan.blog.account.utils.SpringContextUtil;
 import com.xingbingxuan.blog.annotation.Role;
+import com.xingbingxuan.blog.token.Authentication;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
@@ -10,7 +14,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
-import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -19,14 +23,17 @@ import java.util.Objects;
  * @date : 2022/9/21 22:09
  */
 @Component
+@Slf4j
 public class RoleAuthInterceptor implements HandlerInterceptor {
 
-    private static final String TOKEN = "token";
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
-        System.out.println("========role注解拦截器=========");
+
+        HttpServletRequest thisRequest = request;
+
+        log.info("======== account service role注解拦截器 =========");
         if (handler instanceof HandlerMethod) {
             final HandlerMethod handlerMethod = (HandlerMethod) handler;
             final Method method = handlerMethod.getMethod();
@@ -34,28 +41,48 @@ public class RoleAuthInterceptor implements HandlerInterceptor {
             if (Objects.isNull(roleByMethod)){
                 return true;
             }
+            //拦截器中回去feign对象
+            AccountAuthorizeServiceFeign accountAuthorizeServiceFeign =
+                    (AccountAuthorizeServiceFeign) SpringContextUtil.getBeanByClass(AccountAuthorizeServiceFeign.class);
 
-            //判断是否存在token
-            String token = request.getHeader(TOKEN);
             //注解的参数
             String[] value = roleByMethod.value();
 
-            if (token == null) {
-                response.setCharacterEncoding("UTF-8");
-                response.getWriter().write(new ObjectMapper().writeValueAsString("{'code':401,'message':'请求没有token'}"));
-                return false;
-            } else {
-                //TODO 验证
-                boolean contains = Arrays.asList(value).contains(token);
-                if (!contains){
+            //判断是否存在token
+            Authentication authentication = accountAuthorizeServiceFeign.checkToken();
+
+            if (authentication != null){
+                //用户的权限信息
+                List<String> authorities = authentication.getAuthorities();
+                //验证手否存在权限信息
+                Boolean aBoolean = checkAuth(value, authorities);
+                if (!aBoolean){
+                    log.info("token没有权限");
                     response.setCharacterEncoding("UTF-8");
                     response.getWriter().write(new ObjectMapper().writeValueAsString("{'code':401,'message':'token没有权限'}"));
                     return false;
                 }
+
+            }else {
+                log.info("请求没有token");
+                response.setCharacterEncoding("UTF-8");
+                response.getWriter().write(new ObjectMapper().writeValueAsString("{'code':401,'message':'请求没有token'}"));
+                return false;
             }
+
         }
         return true;
 
 
+    }
+
+
+    private Boolean checkAuth(String[] strings,List list){
+        for (String string : strings) {
+            if (list.contains(string)){
+                return  true;
+            }
+        }
+        return false;
     }
 }

@@ -2,6 +2,7 @@ package com.xingbingxuan.blog.dto;
 
 import com.xingbingxuan.blog.vo.RoleVo;
 import lombok.Data;
+import lombok.ToString;
 
 import java.util.Date;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.List;
  * @date : 2022/9/3 17:35
  */
 @Data
+@ToString
 public class UserAllInfoDto {
 
     private Long id;

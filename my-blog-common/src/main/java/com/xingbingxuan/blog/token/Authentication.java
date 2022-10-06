@@ -17,7 +17,8 @@ import java.util.Map;
 public class Authentication implements Serializable {
 
     private static final long serialVersionUID = 4254281320590385048L;
-    private List authorities; //权限(角色)
+    //权限(角色)
+    private List authorities;
     private String username;
     private String userId;
     private String scope;

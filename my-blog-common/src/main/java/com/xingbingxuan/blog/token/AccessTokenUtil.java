@@ -197,14 +197,18 @@ public class AccessTokenUtil {
      * @author : xbx
      * @date : 2022/9/24 22:15
      */
-    public static void removeAccessToken(AccessToken accessToken,Authentication authentication){
+    public static void removeAccessToken(AccessToken accessToken,Authentication authentication) throws Exception {
         byte[] tokenKey = SerializeUtil.serializeKey(PREFIX + ACCESS + accessToken.getToken());
         byte[] autoToTokenKey = SerializeUtil.serializeKey(PREFIX + AUTH_TO_ACCESS + extractKey(authentication.getUserId(), authentication.getUsername()));
         byte[] authKey = SerializeUtil.serializeKey(PREFIX + AUTH + accessToken.getToken());
+        try {
+            RedisUtil.del(tokenKey);
+            RedisUtil.del(autoToTokenKey);
+            RedisUtil.del(authKey);
+        }catch (Exception e){
+            throw new Exception("redis token删除操作出现错误");
+        }
 
-        RedisUtil.del(tokenKey);
-        RedisUtil.del(autoToTokenKey);
-        RedisUtil.del(authKey);
     }
 
 
