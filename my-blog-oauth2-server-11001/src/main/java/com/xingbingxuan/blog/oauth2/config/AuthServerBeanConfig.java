@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.client.RestTemplate;
 
 /**
+ * bean配置类
  * @author : xbx
  * @date : 2022/8/31 22:14
  */

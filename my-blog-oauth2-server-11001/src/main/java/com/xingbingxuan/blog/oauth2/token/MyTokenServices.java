@@ -26,9 +26,14 @@ import java.util.UUID;
 public class MyTokenServices implements AuthorizationServerTokenServices, ResourceServerTokenServices,
         ConsumerTokenServices, InitializingBean {
 
-    private int refreshTokenValiditySeconds = 60 * 60 * 24 * 30; // default 30 days.
-
-    private int accessTokenValiditySeconds = 60 * 60 * 12; // default 12 hours.
+    /**
+     *  default 30 days.
+     */
+    private int refreshTokenValiditySeconds = 60 * 60 * 24 * 30;
+    /**
+     *  default 12 hours.
+     */
+    private int accessTokenValiditySeconds = 60 * 60 * 12;
 
     private boolean supportRefreshToken = false;
 
@@ -50,7 +55,7 @@ public class MyTokenServices implements AuthorizationServerTokenServices, Resour
         Assert.notNull(tokenStore, "tokenStore must be set");
     }
 
-    // TODO
+
     @Override
     @Transactional
     public OAuth2AccessToken createAccessToken(OAuth2Authentication authentication) throws AuthenticationException {
@@ -84,6 +89,7 @@ public class MyTokenServices implements AuthorizationServerTokenServices, Resour
 
     }
 
+    @Override
     @Transactional(noRollbackFor = {InvalidTokenException.class, InvalidGrantException.class})
     public OAuth2AccessToken refreshAccessToken(String refreshTokenValue, TokenRequest tokenRequest)
             throws AuthenticationException {
