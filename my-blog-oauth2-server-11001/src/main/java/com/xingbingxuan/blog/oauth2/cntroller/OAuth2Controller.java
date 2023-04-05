@@ -1,5 +1,6 @@
 package com.xingbingxuan.blog.oauth2.cntroller;
 
+import com.xingbingxuan.blog.oauth2.serveice.GiteeClientService;
 import lombok.extern.slf4j.Slf4j;
 import me.zhyd.oauth.request.AuthRequest;
 import me.zhyd.oauth.utils.AuthStateUtils;
