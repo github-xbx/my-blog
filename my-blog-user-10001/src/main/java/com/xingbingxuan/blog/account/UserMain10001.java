@@ -13,8 +13,8 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @SpringBootApplication
 @EnableFeignClients
 @EnableDiscoveryClient
-public class AccountMain10001 {
+public class UserMain10001 {
     public static void main(String[] args) {
-        SpringApplication.run(AccountMain10001.class,args);
+        SpringApplication.run(UserMain10001.class,args);
     }
 }

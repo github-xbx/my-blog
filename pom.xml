@@ -15,7 +15,7 @@
         <module>my-blog-client-7001</module>
         <module>my-blog-gateway-80</module>
         <module>my-blog-third-party-9001</module>
-        <module>my-blog-account-10001</module>
+        <module>my-blog-user-10001</module>
         <module>my-blog-common</module>
         <module>my-blog-oauth2-server-11001</module>
         <module>my-blog-authorize-server-12001</module>
