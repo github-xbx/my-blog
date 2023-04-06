@@ -2,12 +2,16 @@ package com.xingbingxuan.blog.oauth2.serveice;
 
 import com.xingbingxuan.blog.oauth2.entity.SysUser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
 
 /**
  * @author : xbx
@@ -26,8 +30,12 @@ public class UserServiceImpl implements UserDetailsService {
         sysUser.setUsername(username);
         sysUser.setPassword(passwordEncoder.encode("1111"));
         sysUser.setEnabled(true);
+        sysUser.setAuthorities(Arrays.asList(new SimpleGrantedAuthority("ROLE_BLOG_USER")));
 
-        return sysUser;
+        User user = new User(username, passwordEncoder.encode("1111"), Arrays.asList(new SimpleGrantedAuthority("ROLE_BLOG_USER")));
+
+
+        return user;
 
     }
 

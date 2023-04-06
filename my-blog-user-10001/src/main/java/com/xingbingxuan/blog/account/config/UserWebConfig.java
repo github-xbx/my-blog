@@ -13,7 +13,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  * @date : 2022/10/5 18:57
  */
 @Configuration
-public class AccountWebConfig implements WebMvcConfigurer {
+public class UserWebConfig implements WebMvcConfigurer {
 
 
 
@@ -21,7 +21,7 @@ public class AccountWebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
 
-        registry.addInterceptor(new RoleAuthInterceptor()).addPathPatterns("/**");
+        //registry.addInterceptor(new RoleAuthInterceptor()).addPathPatterns("/**");
 
     }
 }

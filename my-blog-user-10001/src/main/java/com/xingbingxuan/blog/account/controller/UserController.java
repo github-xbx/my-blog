@@ -10,6 +10,7 @@ import com.xingbingxuan.blog.utils.Result;
 import com.xingbingxuan.blog.vo.UserVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -46,6 +47,7 @@ public class UserController {
      * @date : 2022/5/14 17:55
      */
     @GetMapping("accountCount")
+    @PreAuthorize("hasRole('ROLE_BLOG_USER')")
     public Result<Integer> queryAccountCount(){
         Integer count = accountService.queryAccountCount();
         return Result.success(count);
